@@ -86,4 +86,4 @@ function SidebarDesktop () {
     )
 }
 
-export default Sidebar;
+export default SidebarDesktop;
