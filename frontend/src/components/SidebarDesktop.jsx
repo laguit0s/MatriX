@@ -1,12 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function SidebarDesktop () {
     let [isExpanded, setIsExpanded] = useState(true);
     let [showText, setShowText] = useState(true);
+    let [isMobile, setIsMobile] = useState(false);
+    let [isMobileOpen, setIsMobileOpen] = useState(false);
 
     const MAX_WIDTH = 250;
     const MIN_WIDTH = 60
     const COLLAPSE_IDS = ["collapse-alunos", "collapse-cursos", "collapse-configuracoes"];
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 767.98px)");
+
+        const handleMediaChange = event => {
+            setIsMobile(event.matches);
+
+            if (event.matches) {
+                setIsExpanded(true);
+                setShowText(true);
+                setIsMobileOpen(false);
+                return;
+            }
+
+            if (!event.matches) {
+                setIsMobileOpen(false);
+                setIsExpanded(true);
+                setShowText(true);
+            }
+        };
+
+        handleMediaChange(mediaQuery);
+
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener("change", handleMediaChange);
+            return () => mediaQuery.removeEventListener("change", handleMediaChange);
+        }
+
+        mediaQuery.addListener(handleMediaChange);
+        return () => mediaQuery.removeListener(handleMediaChange);
+    }, []);
 
     const closeAllSubmenus = () => {
         COLLAPSE_IDS.forEach((id) => {
@@ -24,6 +57,11 @@ function SidebarDesktop () {
     }
 
     const toggleSidebar = () => {
+        if (isMobile) {
+            setIsMobileOpen(previousValue => !previousValue);
+            return;
+        }
+
         if (isExpanded) {
             closeAllSubmenus();
             setIsExpanded(false);
@@ -52,8 +90,20 @@ function SidebarDesktop () {
         } 
     }
 
+    const sidebarOpen = isMobile ? isMobileOpen : true;
+    const mobileWidth = "min(85vw, 320px)";
+
     return (
-        <nav className="navbar flex-shrink-0 h-100 bg-light border-end d-md-block p-0" style={{width: isExpanded ? `${MAX_WIDTH}px` : `${MIN_WIDTH}px`, minWidth: isExpanded ? `${MAX_WIDTH}px` : `${MIN_WIDTH}px`, transition: 'all 0.3s ease'}} onTransitionEnd={handleTransition}>
+        <>
+            {isMobile && !sidebarOpen && (
+                <button className="btn btn-secondary position-fixed top-0 start-0 m-3 d-md-none" style={{zIndex: 1061}} onClick={toggleSidebar} aria-label="Abrir menu lateral">
+                    <i className="bi bi-list"></i>
+                </button>
+            )}
+            {isMobile && sidebarOpen && (
+                <div className="position-fixed top-0 start-0 w-100 h-100 d-md-none" style={{backgroundColor: 'rgba(0, 0, 0, 0.35)', zIndex: 1050}} onClick={toggleSidebar} aria-hidden="true"></div>
+            )}
+            <nav className="navbar flex-shrink-0 h-100 bg-light border-end d-md-block p-0" style={isMobile ? {position: 'fixed', top: 0, left: 0, width: mobileWidth, minWidth: mobileWidth, height: '100vh', transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)', transition: 'transform 0.3s ease', zIndex: 1051} : {position: 'relative', width: isExpanded ? `${MAX_WIDTH}px` : `${MIN_WIDTH}px`, minWidth: isExpanded ? `${MAX_WIDTH}px` : `${MIN_WIDTH}px`, transition: 'all 0.3s ease'}} onTransitionEnd={handleTransition}>
             <ul className="navbar-nav d-flex flex-column h-100 w-100">
                 <li className={isExpanded ? "nav-item w-100" : "nav-item w-100 d-flex flex-column align-items-center"}>
                     <button className="btn w-100 py-0" onClick={toggleSidebar}><i className={(isExpanded ? "bi bi-arrow-left" : "bi bi-arrow-right") + " fs-2"}></i></button>
@@ -82,7 +132,8 @@ function SidebarDesktop () {
                     </ul>
                 </li>
             </ul>
-        </nav>
+            </nav>
+        </>
     )
 }
 
