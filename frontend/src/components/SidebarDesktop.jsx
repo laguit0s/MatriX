@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Sidebar () {
+function SidebarDesktop () {
     let [isExpanded, setIsExpanded] = useState(true);
     let [showText, setShowText] = useState(true);
 
