@@ -96,7 +96,7 @@ function SidebarDesktop () {
     return (
         <>
             {isMobile && !sidebarOpen && (
-                <button className="btn btn-secondary position-fixed top-0 start-0 m-3 d-md-none" style={{zIndex: 1061}} onClick={toggleSidebar} aria-label="Abrir menu lateral">
+                <button className="btn btn-light border position-fixed top-0 start-0 m-3 d-md-none" style={{zIndex: 1061}} onClick={toggleSidebar} aria-label="Abrir menu lateral">
                     <i className="bi bi-list"></i>
                 </button>
             )}
