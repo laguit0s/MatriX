@@ -5,7 +5,7 @@ function Sidebar () {
     let [showText, setShowText] = useState(true);
 
     const MAX_WIDTH = 250;
-    const MIN_WIDTH = 80;
+    const MIN_WIDTH = 60
     const COLLAPSE_IDS = ["collapse-alunos", "collapse-cursos", "collapse-configuracoes"];
 
     const closeAllSubmenus = () => {
@@ -57,7 +57,7 @@ function Sidebar () {
             <ul className="navbar-nav d-flex flex-column h-100">
                 <li className={isExpanded ? "nav-item" : "nav-item d-flex flex-column align-items-center"}>
                     <button className="btn w-100 py-0" onClick={toggleSidebar}><i className={(isExpanded ? "bi bi-arrow-left" : "bi bi-arrow-right") + " fs-2"}></i></button>
-                    <a href="#" className={isExpanded ? "nav-link ps-4 border-top border-bottom" : "nav-link border-top border-bottom text-center"}><i className={isExpanded ? "bi bi-columns-gap me-2 h1" : "bi bi-columns-gap h1"}></i><span className={(showText ? "d-inline" : "d-none") + " h1"}>MatriX</span></a>
+                    <a href="#" className={isExpanded ? "nav-link ps-4 border-top border-bottom" : "nav-link border-top border-bottom text-center w-100"}><i className={isExpanded ? "bi bi-columns-gap me-2 h1" : "bi bi-columns-gap h1"}></i><span className={(showText ? "d-inline" : "d-none") + " h1"}>MatriX</span></a>
                 </li>
                 <li className={isExpanded ? "nav-item" : "nav-item d-flex justify-content-center"}>
                     <a href="#" className={isExpanded ? "nav-link ms-4" : "nav-link"}><i className={isExpanded ? "bi bi-bar-chart-line-fill me-2" : "bi bi-bar-chart-line-fill"}></i><span className={showText ? "d-inline" : "d-none"}>Visão Geral</span></a>
