@@ -1,19 +1,11 @@
-import { useEffect, useState } from 'react'
-import api from './services/api'
+import Sidebar from "./components/sidebar"
 
 function App() {
-  const [mensagem, setMensagem] = useState('Carregando...')
 
-  useEffect(() => {
-    api.get('/').then(response => {
-      setMensagem(response.data)
-    })
-  }, [])
 
   return (
-    <div>
-      <h1>ERP MatriX</h1>
-      <p>Status do Backend: {mensagem}</p>
+    <div className='d-flex flex-grow-1 h-100'>
+      <Sidebar />
     </div>
   )
 }
