@@ -47,7 +47,7 @@ function SidebarDesktop() {
     const collapsedNavItemClass = `${baseNavItemClass} d-flex justify-content-center`
     const expandedNavItemClass = isExpanded ? baseNavItemClass : collapsedNavItemClass
     
-    const baseNavLinkClass = "nav-link w-100"
+    const baseNavLinkClass = "nav-link w-auto"
     const expandedNavLinkClass = `${baseNavLinkClass} ms-4`
     const collapsedNavLinkClass = `${baseNavLinkClass} text-center`
     const navLinkClass = isExpanded ? expandedNavLinkClass : collapsedNavLinkClass

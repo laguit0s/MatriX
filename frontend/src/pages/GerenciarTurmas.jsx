@@ -7,7 +7,7 @@ function GerenciarTurmas() {
     const tableBody = ["DATA 1", "DATA 2", "DATA 3"]
     return (
         <div className="d-flex flex-column h-100">
-            <Header title="Gerenciar Turmas" />
+            <Header title="GERENCIAR TURMAS" />
             <DataTable headerContent={tableHeader} bodyContent={tableBody} />
         </div>
     )

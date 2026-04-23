@@ -7,7 +7,7 @@ function GerenciarCursos() {
     const tableBody = ["DATA 1", "DATA 2", "DATA 3"]
     return (
         <div className="d-flex flex-column flex-grow-1">
-            <Header title="Gerenciar Cursos" />
+            <Header title="GERENCIAR CURSOS" />
             <DataTable headerContent={tableHeader} bodyContent={tableBody} />
         </div>
     )
