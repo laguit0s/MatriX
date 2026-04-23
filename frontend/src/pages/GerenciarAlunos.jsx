@@ -3,12 +3,18 @@ import DataTable from "../components/DataTable"
 import Header from "../components/Header"
 
 function GerenciarAlunos() {
-    const tableHeader = ["HEADER 1", "HEADER 2", "HEADER 3"]
-    const tableBody = ["DATA 1", "DATA 2", "DATA 3"]
+    const tableHeader = []
+    for (let i = 0; i < 20; i++) {
+        tableHeader.push(`HEADER ${i}`)
+    }
+    const tableBody = []
+    for (let i = 0; i < 1000; i++) {
+        tableBody.push(`DATA ${i}`)
+    }
     return (
-        <div className="d-flex flex-column flex-grow-1">
+        <div className="d-flex flex-column h-100">
             <Header title="Gerenciar Alunos" />
-            <DataTable headerContent={tableHeader} bodyContent={tableBody} />
+            <DataTable headerContent={tableHeader} bodyContent={tableBody} bodyColumnClass={{0: "text-start", 1: "text-center", 2: "text-end"}}/>
         </div>
     )
 }

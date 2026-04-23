@@ -1,14 +1,31 @@
-function DataTable({ headerContent = [], bodyContent = [] }) {
+function DataTable({
+    headerContent = [],
+    bodyContent = [],
+    headerColumnClass = {},
+    bodyColumnClass = {},
+    maxHeight = "100%",
+}) {
     const qtdHeader = headerContent.length;
     const qtdRows = qtdHeader > 0 ? Math.ceil(bodyContent.length / qtdHeader) : 0;
+
+    const getHeaderClass = (colIndex) => {
+        return `sticky-top text-center ${headerColumnClass[colIndex] || ''}`
+    }
+
+    const getBodyClass = (colIndex) => {
+        return `${bodyColumnClass[colIndex] || ''}`
+    }
     
     return (
-        <div className="table-responsive flex-grow-1 w-100" style={{ minWidth: 0 }}>
-            <table className="table table-bordered table-striped text-nowrap">
+        <div
+            className="table-responsive flex-grow-1 w-100 overflow-auto"
+            style={{ minWidth: 0, maxHeight }}
+        >
+            <table className="table table-bordered table-striped text-nowrap m-0">
                 <thead>
                     <tr>
                         {headerContent.map((texto, i) => (
-                            <th key={i} className="sticky-top text-center">{texto}</th>
+                            <th key={i} className={getHeaderClass(i)}>{texto}</th>
                         ))}
                     </tr>
                 </thead>
@@ -22,7 +39,7 @@ function DataTable({ headerContent = [], bodyContent = [] }) {
                                         const cellContent = bodyContent[index];
                                         
                                         return (
-                                            <td key={index} className="text-center">
+                                            <td key={index} className={getBodyClass(j)}>
                                                 {cellContent !== undefined ? cellContent : ""}
                                             </td>
                                         );
