@@ -1,6 +1,9 @@
 import SidebarDesktop from "./components/SidebarDesktop"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import GerenciarAlunos from "./pages/GerenciarAlunos"
+import GerenciarCursos from "./pages/GerenciarCursos"
+import GerenciarTurmas from "./pages/GerenciarTurmas"
+
 import "./styles/global.css"
 
 function App() {
@@ -11,8 +14,8 @@ function App() {
         <div className="routes-container content-wrapper">
           <Routes>
             <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
-            <Route path="/gerenciar-cursos" element={<GerenciarAlunos />} />
-            <Route path="/gerenciar-turmas" element={<GerenciarAlunos />} />
+            <Route path="/gerenciar-cursos" element={<GerenciarCursos />} />
+            <Route path="/gerenciar-turmas" element={<GerenciarTurmas />} />
           </Routes>
         </div>
       </BrowserRouter>
