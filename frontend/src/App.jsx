@@ -1,12 +1,21 @@
 import SidebarDesktop from "./components/SidebarDesktop"
-import DataTable from "./components/DataTable"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import GerenciarAlunos from "./pages/GerenciarAlunos"
+import "./styles/global.css"
 
 function App() {
-  const header = ["TESTE", "TESTE", "TESTE"]
-  const body = ["DADOS", "DADOS", "DADOS"]
   return (
     <div className='d-flex flex-grow-1 h-100' style={{ minWidth: 0 }}>
-      <SidebarDesktop />
+      <BrowserRouter>
+        <SidebarDesktop />
+        <div className="routes-container content-wrapper">
+          <Routes>
+            <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
+            <Route path="/gerenciar-cursos" element={<GerenciarAlunos />} />
+            <Route path="/gerenciar-turmas" element={<GerenciarAlunos />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </div>
   )
 }

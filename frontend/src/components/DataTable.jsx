@@ -4,7 +4,7 @@ function DataTable({ headerContent = [], bodyContent = [] }) {
     
     return (
         <div className="table-responsive flex-grow-1 w-100" style={{ minWidth: 0 }}>
-            <table className="table table-striped text-nowrap">
+            <table className="table table-bordered table-striped text-nowrap">
                 <thead>
                     <tr>
                         {headerContent.map((texto, i) => (
@@ -22,7 +22,7 @@ function DataTable({ headerContent = [], bodyContent = [] }) {
                                         const cellContent = bodyContent[index];
                                         
                                         return (
-                                            <td key={index}>
+                                            <td key={index} className="text-center">
                                                 {cellContent !== undefined ? cellContent : ""}
                                             </td>
                                         );

@@ -1,0 +1,17 @@
+/* Padding para o conteúdo principal em mobile */
+@media (max-width: 767.98px) {
+  :root {
+    --navbar-height: 60px;
+  }
+  
+  .content-wrapper {
+    margin-top: var(--navbar-height);
+  }
+}
+
+/* Garante que o Routes renderize corretamente */
+.routes-container {
+  flex-grow: 1;
+  overflow: auto;
+  width: 100%;
+}
