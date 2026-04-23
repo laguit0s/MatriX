@@ -1,4 +1,5 @@
 import SidebarDesktop from "./components/SidebarDesktop"
+import DataTable from "./components/DataTable"
 
 function App() {
   const header = ["TESTE", "TESTE", "TESTE"]
