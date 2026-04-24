@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 function SidebarDesktop() {
+    // Estados de controle da sidebar (desktop e mobile).
     const [isExpanded, setIsExpanded] = useState(true)
     const [showText, setShowText] = useState(true)
     const [isMobile, setIsMobile] = useState(false)
@@ -52,7 +53,7 @@ function SidebarDesktop() {
     const collapsedNavLinkClass = `${baseNavLinkClass} text-center`
     const navLinkClass = isExpanded ? expandedNavLinkClass : collapsedNavLinkClass
 
-    // Handlers
+    // Handlers de interação e sincronização visual.
     const closeAllSubmenus = () => {
         COLLAPSE_IDS.forEach((id) => {
             const submenu = document.getElementById(id)
@@ -96,7 +97,7 @@ function SidebarDesktop() {
         }
     }
 
-    // Media Query
+    // Listener de media query para alternar comportamento entre desktop e mobile.
     useEffect(() => {
         const mediaQuery = window.matchMedia("(max-width: 767.98px)")
 
@@ -125,7 +126,7 @@ function SidebarDesktop() {
         return () => mediaQuery.removeListener(handleMediaChange)
     }, [])
 
-    // Render
+    // Derivados de estado usados apenas na renderização.
     const sidebarOpen = isMobile ? isMobileOpen : true
     const arrowIcon = isExpanded ? "bi-arrow-left" : "bi-arrow-right"
     const iconVisibility = showText ? "d-inline" : "d-none"

@@ -1,17 +1,16 @@
 const express = require('express');
 const cors = require('cors');
+const alunosRouter = require('./routes/alunos.routes');
 require('dotenv').config();
 
 const app = express();
 
-// Middlewares
+// Habilita CORS e leitura de JSON no corpo das requests.
 app.use(cors());
 app.use(express.json());
 
-// Rota de teste
-app.get('/', (req, res) => {
-  res.send('API do ERP Matrix rodando!');
-});
+// Prefixo base do recurso de alunos.
+app.use('/api/gerenciar-alunos', alunosRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -1,4 +1,5 @@
 function Header({ title }) {
+    // Cabeçalho padrão reutilizado nas páginas administrativas.
     return (
         <div className="app-header px-3 px-md-4 py-3">
             <div className="d-flex align-items-center justify-content-between">
@@ -8,7 +9,7 @@ function Header({ title }) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Header
+export default Header;
