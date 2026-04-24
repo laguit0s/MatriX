@@ -17,18 +17,11 @@ function GerenciarAlunos() {
 
     // Estrutura visual da tabela (header + corpo achatado).
     const tableHeaders = [<i className="bi bi-gear px-1"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", "DATA DA MATRÍCULA"];
-    const tableRows = [];
-
-    alunos.forEach(aluno => {
-        for (let key in aluno) {
-            tableRows.push(aluno[key]);
-        }
-    });
 
     return (
         <div className="d-flex flex-column h-100">
             <Header title="GERENCIAR ALUNOS" />
-            <DataTable headerContent={tableHeaders} bodyContent={tableRows} headerColumnClass={{ 1: "width-1" }} bodyColumnClass={{ 2: "text-start" }} />
+            <DataTable headerContent={tableHeaders} bodyContent={alunos} headerColumnClass={{ 1: "width-1" }} bodyColumnClass={{ 2: "text-start" }} />
         </div>
     );
 }

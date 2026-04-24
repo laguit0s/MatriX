@@ -7,7 +7,11 @@ function DataTable({
 }) {
     // O body é recebido como array achatado; calculamos quantas linhas renderizar.
     const headerCount = headerContent.length;
-    const rowCount = headerCount > 0 ? Math.ceil(bodyContent.length / headerCount) : 0;
+
+    let propriedades = [];
+    for (let key in bodyContent[0]) {
+        propriedades.push(key);
+    }
 
     const getHeaderClass = colIndex => {
         return `sticky-top text-center app-table__head-cell ${headerColumnClass[colIndex + 1] || ''}`;
@@ -35,18 +39,11 @@ function DataTable({
                     </tr>
                 </thead>
                 <tbody className="app-table__body">
-                    {Array.from({ length: rowCount }).map((_, rowIndex) => (
+                    {bodyContent.map((_, rowIndex) => (
                         <tr key={rowIndex}>
-                            {Array.from({ length: headerCount }).map((_, colIndex) => {
-                                // Mapeia (linha, coluna) para o índice do array achatado.
-                                const flatIndex = headerCount * rowIndex + colIndex;
-                                const cellContent = bodyContent[flatIndex];
-
-                                return (
-                                    <td key={flatIndex} className={getBodyClass(colIndex)}>
-                                        {cellContent !== undefined ? cellContent : ""}
-                                    </td>
-                                );
+                            {propriedades.map((prop, colIndex) => {
+                                const cellContent = bodyContent[rowIndex][propriedades[colIndex]];
+                                return <td>{cellContent}</td>
                             })}
                         </tr>
                     ))}
