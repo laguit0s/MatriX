@@ -24,14 +24,15 @@
 
 .app-table {
   overflow: hidden;
+  box-shadow: 0px 0px 4px black;
 }
 
 .app-table__head th {
-  background: linear-gradient(180deg, #0f172a, #111827) !important;
+  background-color: #212c5b !important;
   color: #f8fafc !important;
   font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   border-bottom: 0 !important;
 }

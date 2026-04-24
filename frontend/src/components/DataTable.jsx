@@ -21,11 +21,11 @@ function DataTable({
             className="table-responsive flex-grow-1 w-100 overflow-auto app-table-shell"
             style={{ minWidth: 0, maxHeight }}
         >
-            <table className="table table-borderless table-hover align-middle text-nowrap m-0 app-table">
-                <thead className="app-table__head">
+            <table className="table table-bordered table-hover align-middle text-nowrap m-0 app-table">
+                <thead className="app-table__head border-bottom">
                     <tr>
                         {headerContent.map((texto, i) => (
-                            <th key={i} className={getHeaderClass(i)}>{texto}</th>
+                            <th key={i} className={getHeaderClass(i) + " border-0"}>{texto}</th>
                         ))}
                     </tr>
                 </thead>
