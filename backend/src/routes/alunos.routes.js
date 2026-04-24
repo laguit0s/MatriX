@@ -1,10 +1,8 @@
 const { Router } = require('express');
 const listarAlunos = require('../controllers/alunos.controller');
 
-// Router dedicado ao recurso de alunos.
-const alunosRouter = Router();
+const routerAlunos = Router();
 
-// GET /api/gerenciar-alunos/
-alunosRouter.get('/', listarAlunos);
+routerAlunos.get('/', listarAlunos);
 
-module.exports = alunosRouter;
+module.exports = routerAlunos;

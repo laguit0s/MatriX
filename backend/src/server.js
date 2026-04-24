@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const alunosRouter = require('./routes/alunos.routes');
+const routerAlunos = require('./routes/alunos.routes');
 require('dotenv').config();
 
 const app = express();
@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Prefixo base do recurso de alunos.
-app.use('/api/gerenciar-alunos', alunosRouter);
+app.use('/api/gerenciar-alunos', routerAlunos);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

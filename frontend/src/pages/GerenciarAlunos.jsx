@@ -1,27 +1,29 @@
 import DataTable from "../components/DataTable";
 import Header from "../components/Header";
 import api from "../services/api";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function GerenciarAlunos() {
+    const [alunos, setAlunos] = useState([]);
+
     // Carrega alunos uma vez ao montar a página.
     useEffect(() => {
         async function carregarAlunos() {
-            try {
-                const response = await api.get('/api/gerenciar-alunos');
-                // Log temporário para validar integração frontend-backend.
-                console.log(response.data);
-            } catch (error) {
-                console.error('Erro ao buscar alunos:', error);
-            }
+            const req = await api.get('api/gerenciar-alunos');
+            setAlunos(req.data);
         }
-
         carregarAlunos();
     }, []);
 
     // Estrutura visual da tabela (header + corpo achatado).
     const tableHeaders = [<i className="bi bi-gear px-1"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", "DATA DA MATRÍCULA"];
     const tableRows = [];
+
+    alunos.forEach(aluno => {
+        for (let key in aluno) {
+            tableRows.push(aluno[key]);
+        }
+    });
 
     return (
         <div className="d-flex flex-column h-100">
