@@ -1,8 +1,9 @@
 const { Router } = require('express');
-const listarAlunos = require('../controllers/alunos.controller');
+const alunosController = require('../controllers/alunos.controller');
 
 const routerAlunos = Router();
 
-routerAlunos.get('/', listarAlunos);
+routerAlunos.get('/', alunosController.listarAlunos);
+routerAlunos.post('/', alunosController.cadastrarAlunos);
 
 module.exports = routerAlunos;

@@ -5,4 +5,11 @@ async function listarAlunos(req, res) {
   res.status(200).json(alunos);
 }
 
-module.exports = listarAlunos;
+function cadastrarAlunos(req, res) {
+  console.log(req.body);
+}
+
+module.exports = {
+  listarAlunos,
+  cadastrarAlunos
+}
