@@ -3,15 +3,13 @@ function DataTable({
     bodyContent = [],
     headerColumnClass = {},
     bodyColumnClass = {},
-    maxHeight = "100%",
+    propertiesIgnore = [],
+    standard
 }) {
-    // O body é recebido como array achatado; calculamos quantas linhas renderizar.
-    const headerCount = headerContent.length;
 
-    let propriedades = [];
-    for (let key in bodyContent[0]) {
-        propriedades.push(key);
-    }
+    const properties = bodyContent[0]
+        ? Object.keys(bodyContent[0]).filter(key => !propertiesIgnore.includes(key))
+        : [];
 
     const getHeaderClass = colIndex => {
         return `sticky-top text-center app-table__head-cell ${headerColumnClass[colIndex + 1] || ''}`;
@@ -26,24 +24,27 @@ function DataTable({
     return (
         <div
             className="table-responsive flex-grow-1 w-100 overflow-auto app-table-shell"
-            style={{ minWidth: 0, maxHeight }}
+            style={{ minWidth: 0, maxHeight: '100%' }}
         >
             <table className="table table-bordered table-hover align-middle text-nowrap m-0 app-table">
                 <thead className="app-table__head border-bottom">
                     <tr>
-                        {headerContent.map((headerLabel, columnIndex) => (
-                            <th key={columnIndex} className={`${getHeaderClass(columnIndex)} border-0`}>
+                        {headerContent.map((headerLabel, colIndex) => (
+                            <th key={colIndex} className={`${getHeaderClass(colIndex)} border-0`}>
                                 {headerLabel}
                             </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody className="app-table__body">
-                    {bodyContent.map((_, rowIndex) => (
+                    {bodyContent.map((row, rowIndex) => (
                         <tr key={rowIndex}>
-                            {propriedades.map((prop, colIndex) => {
-                                const cellContent = bodyContent[rowIndex][propriedades[colIndex]];
-                                return <td>{cellContent}</td>
+                            {standard && (
+                                <td className={getBodyClass(0)}>{standard}</td>
+                            )}
+                            {properties.map((prop, colIndex) => {
+                                const cellContent = row[prop];
+                                return <td key={prop} className={getBodyClass(colIndex + 1)}>{cellContent}</td>
                             })}
                         </tr>
                     ))}

@@ -21,7 +21,7 @@ function GerenciarAlunos() {
     return (
         <div className="d-flex flex-column h-100">
             <Header title="GERENCIAR ALUNOS" />
-            <DataTable headerContent={tableHeaders} bodyContent={alunos} headerColumnClass={{ 1: "width-1" }} bodyColumnClass={{ 2: "text-start" }} />
+            <DataTable headerContent={tableHeaders} bodyContent={alunos} headerColumnClass={{ 1: "width-1" }} bodyColumnClass={{ 2: "text-start", 5: "text-start" }} propertiesIgnore={['id']} standard={"Editar"} />
         </div>
     );
 }
