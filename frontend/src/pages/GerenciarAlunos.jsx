@@ -34,7 +34,7 @@ function GerenciarAlunos() {
                     value: 'Profile', 
                     profileLink: true,
                     renderProfile: (item_id) => 
-                        RenderProfile('/gerenciar-alunos/', 'bi bi-pencil text-black', item_id)
+                        RenderProfile('/gerenciar-alunos/', 'bi bi-person-square text-muted', item_id)
                     }}/>
         </div>
     );

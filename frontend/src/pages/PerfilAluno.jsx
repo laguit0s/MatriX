@@ -22,42 +22,44 @@ function PerfilAluno() {
 
     // aguarda termino da busca antes exibir blocos formatados em display
     return dados ? (
-        <div className="d-flex flex-column h-100 p-4 w-100">
-            <div className="d-flex align-items-center mb-4 gap-3">
-                <Link to="/gerenciar-alunos" className="btn btn-outline-secondary">
-                    <i className="bi bi-arrow-left"></i>
+        <div className="d-flex flex-column h-100 w-100">
+            <div className="d-flex flex-column align-items-start p-4 gap-3">
+                <Link to="/gerenciar-alunos" className='app-header__eyebrow'>
+                    <i className="bi bi-house-fill"></i>
+                    <span>Voltar</span>
                 </Link>
-                <h2 className="m-0 fs-3">perfil do aluno</h2>
+                <h1 className="app-header__title">PERFIL DO ALUNO</h1>
             </div>
             
             <div className="card shadow-sm border-0 w-100 placeholder-glow">
                 <div className="card-body p-4">
                     <div className="d-flex align-items-center mb-4 gap-4">
-                        <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem' }}>
-                            <i className="bi bi-person-fill"></i>
+                        <div className="bg-primary fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem' }}>
+                            <span>{dados.nome[0]}</span>
                         </div>
                         <div>
                             <h3 className="mb-1">{dados.nome}</h3>
-                            <p className="text-muted mb-0">matricula em: {dados.data_matricula || 'não informada'}</p>
+                            <p className="text-muted m-0">Matrícula em: {dados.data_matricula || 'não informada'}</p>
+                            <p className='text-muted m-0'>Situação: <span class="badge text-bg-success">Matriculado</span></p>
                         </div>
                     </div>
 
                     <hr className="mb-4" />
 
-                    <div className="row g-4 mt-2">
-                        <div className="col-12 col-md-6 col-lg-3">
+                    <div className="row g-3">
+                        <div className="col-12">
                             <label className="text-muted small text-uppercase">cpf</label>
                             <p className="fs-6 fw-bold mb-0 text-break">{dados.cpf}</p>
                         </div>
-                        <div className="col-12 col-md-6 col-lg-3">
+                        <div className="col-12">
                             <label className="text-muted small text-uppercase">data de nascimento</label>
                             <p className="fs-6 fw-bold mb-0 text-break">{dados.data_nascimento}</p>
                         </div>
-                        <div className="col-12 col-md-6 col-lg-3">
+                        <div className="col-12">
                             <label className="text-muted small text-uppercase">e-mail</label>
                             <p className="fs-6 fw-bold mb-0 text-break">{dados.email}</p>
                         </div>
-                        <div className="col-12 col-md-6 col-lg-3">
+                        <div className="col-12">
                             <label className="text-muted small text-uppercase">telefone</label>
                             <p className="fs-6 fw-bold mb-0 text-break">{dados.telefone}</p>
                         </div>
