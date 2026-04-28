@@ -3,7 +3,7 @@ const alunosController = require('../controllers/alunos.controller');
 
 const routerAlunos = Router();
 
-routerAlunos.get('/', alunosController.listarAlunos);
-routerAlunos.post('/', alunosController.cadastrarAlunos);
+routerAlunos.get('/', alunosController.getAlunos);
+routerAlunos.post('/', alunosController.postAluno);
 
 module.exports = routerAlunos;

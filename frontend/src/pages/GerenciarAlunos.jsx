@@ -2,6 +2,7 @@ import CadastroAluno from "../components/CadastroAluno";
 import DataTable from "../components/DataTable";
 import Header from "../components/Header";
 import api from "../services/api";
+import RenderProfile from "../services/renderProfileLink";
 import { useEffect, useState } from "react";
 
 function GerenciarAlunos() {
@@ -22,7 +23,18 @@ function GerenciarAlunos() {
     return (
         <div className="d-flex flex-column h-100">
             <Header title="GERENCIAR ALUNOS" Modal={CadastroAluno} modalID={"#cadastro-aluno"}/>
-            <DataTable headerContent={tableHeaders} bodyContent={alunos} headerColumnClass={{ 1: "width-1" }} bodyColumnClass={{ 2: "text-start", 5: "text-start" }} propertiesIgnore={['id']} standard={"Editar"} />
+            <DataTable 
+            headerContent={tableHeaders} 
+            bodyContent={alunos} 
+            headerColumnClass={{ 1: "width-1" }} 
+            bodyColumnClass={{ 1: 'fs-5', 2: "text-start", 5: "text-start" }} 
+            propertiesIgnore={['id']} 
+            standard={{
+                    value: 'Profile', 
+                    profileLink: true,
+                    renderProfile: (item_id) => 
+                        RenderProfile('/gerenciar-alunos/perfil-aluno/', 'bi bi-pencil text-black', item_id)
+                    }}/>
         </div>
     );
 }

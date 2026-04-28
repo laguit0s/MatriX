@@ -4,7 +4,7 @@ function DataTable({
     headerColumnClass = {},
     bodyColumnClass = {},
     propertiesIgnore = [],
-    standard
+    standard = {}
 }) {
 
     const properties = bodyContent[0]
@@ -39,9 +39,7 @@ function DataTable({
                 <tbody className="app-table__body">
                     {bodyContent.map((row, rowIndex) => (
                         <tr key={rowIndex}>
-                            {standard && (
-                                <td className={getBodyClass(0)}>{standard}</td>
-                            )}
+                            <td>{standard.profileLink ? standard.renderProfile(bodyContent[rowIndex]['id']) : standard.value}</td>
                             {properties.map((prop, colIndex) => {
                                 const cellContent = row[prop];
                                 return <td key={prop} className={getBodyClass(colIndex + 1)}>{cellContent}</td>
