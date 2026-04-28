@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import api from '../services/api';
 
+// modal de cadastro de novo aluno
 function CadastroAluno() {
+    // estado inicial do formulario
     const [form, setForm] = useState({
         nome: "",
         cpf: "",
@@ -10,6 +12,7 @@ function CadastroAluno() {
         email: ""
     });
 
+    // atualiza o estado com os dados digitados
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -17,8 +20,10 @@ function CadastroAluno() {
         })
     }
 
+    // envia os dados do aluno para a api
     const handleSubmit = async (e) => {
-        await api.post('api/gerenciar-alunos', form);
+        e.preventDefault(); // previne recarregamento da pagina
+        await api.post('/api/gerenciar-alunos', form);
     }
 
     return (

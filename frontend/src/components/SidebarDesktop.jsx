@@ -2,19 +2,19 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 function SidebarDesktop() {
-    // Estados de controle da sidebar (desktop e mobile).
+    // estados de controle visual barra de menu desktop e mobile
     const [isExpanded, setIsExpanded] = useState(true)
     const [showText, setShowText] = useState(true)
     const [isMobile, setIsMobile] = useState(false)
     const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-    // Constants
+    // controle numericos e chaves auxiliares base 
     const MAX_WIDTH = 250
     const MIN_WIDTH = 60
     const COLLAPSE_IDS = ["collapse-alunos", "collapse-cursos", "collapse-configuracoes"]
     const mobileWidth = "min(85vw, 320px)"
 
-    // Styles
+    // variaveis de controle de comportamento de css
     const navbarStyles = {
         mobileNavbar: {
             zIndex: 1060

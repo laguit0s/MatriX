@@ -1,3 +1,4 @@
+// renderiza a tabela dinamica de dados
 function DataTable({
     headerContent = [],
     bodyContent = [],
@@ -7,16 +8,18 @@ function DataTable({
     standard = {}
 }) {
 
+    // filtra propriedades que devem ser ignoradas
     const properties = bodyContent[0]
         ? Object.keys(bodyContent[0]).filter(key => !propertiesIgnore.includes(key))
         : [];
 
+    // define classes css do cabecalho com base no indice
     const getHeaderClass = colIndex => {
         return `sticky-top text-center app-table__head-cell ${headerColumnClass[colIndex + 1] || ''}`;
     };
 
+    // define classes css do corpo, aplica alinhamento central caso nao definido
     const getBodyClass = colIndex => {
-        // Mantém alinhamento explícito quando já definido; caso contrário, centraliza.
         const columnClass = bodyColumnClass[colIndex + 1] || "";
         return `${columnClass.includes("text-start") || columnClass.includes("text-end") ? columnClass : `${columnClass} text-center`}`;
     };

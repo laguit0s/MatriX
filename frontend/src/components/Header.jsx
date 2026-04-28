@@ -1,5 +1,6 @@
+// cabecalho padrao reutilizado nas paginas administrativas
 function Header({ title, Modal, modalID }) {
-    // Cabeçalho padrão reutilizado nas páginas administrativas.
+    
     return (
         <div className="app-header px-3 px-md-4 py-3 m-0">
             <div className="container-fluid flex-column flex-md-row align-items-start align-items-md-center justify-content-center justify-content-md-between">
@@ -15,6 +16,7 @@ function Header({ title, Modal, modalID }) {
                         </div>
                         <button type="button" className="btn btn-primary w-100 align-self-start" data-bs-toggle="modal" data-bs-target={modalID}>Adicionar +</button>
                     </form>
+                    {/* renderiza modal caso seja passado por propriedade */}
                     {Modal && <Modal />}
                 </div>
             </div>
