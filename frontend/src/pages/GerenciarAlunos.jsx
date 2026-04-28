@@ -5,10 +5,11 @@ import api from "../services/api";
 import RenderProfile from "../services/renderProfileLink";
 import { useEffect, useState } from "react";
 
+// constroi a tela principal para gerenciar registros e tabela
 function GerenciarAlunos() {
     const [alunos, setAlunos] = useState([]);
 
-    // Carrega alunos uma vez ao montar a página.
+    // faz leitura dos recursos do servidor e popula o estado da tabela
     useEffect(() => {
         async function carregarAlunos() {
             const req = await api.get('/api/gerenciar-alunos');
@@ -17,7 +18,7 @@ function GerenciarAlunos() {
         carregarAlunos();
     }, []);
 
-    // Estrutura visual da tabela (header + corpo achatado).
+    // define o titulo das colunas da tabela de exibicao de dados
     const tableHeaders = [<i className="bi bi-gear px-1"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", "DATA DA MATRÍCULA"];
 
     return (
@@ -39,4 +40,5 @@ function GerenciarAlunos() {
     );
 }
 
+// expoe acesso a base global
 export default GerenciarAlunos;

@@ -5,16 +5,14 @@ require('dotenv').config();
 
 const app = express();
 
-// Habilita CORS e leitura de JSON no corpo das requests.
+// habilita cors e leitura json
 app.use(cors());
 app.use(express.json());
 
-// Prefixo base do recurso de alunos.
+// rota principal de alunos
 app.use('/api/gerenciar-alunos', routerAlunos);
 
 const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`Servidor rodando na porta ${PORT}`);
-// });
 
+// inicia o servidor
 app.listen(PORT);

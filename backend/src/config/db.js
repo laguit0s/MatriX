@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-// Conexão única com o banco usando variáveis de ambiente.
+// configuracao do pool de conexao com banco de dados
 const connection = mysql.createPool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,

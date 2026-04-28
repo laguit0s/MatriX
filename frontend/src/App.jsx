@@ -7,15 +7,16 @@ import PerfilAluno from "./pages/PerfilAluno";
 
 import "./styles/global.css";
 
+// estrutura principal da navegacao e layout
 function App() {
   return (
-    // Estrutura principal: sidebar fixa + área de conteúdo das páginas.
+    // layout com barra lateral e painel de conteudo
     <div className="d-flex flex-grow-1 h-100" style={{ minWidth: 0 }}>
       <BrowserRouter>
         <SidebarDesktop />
         <div className="routes-container content-wrapper">
           <Routes>
-            {/* Rotas de módulos administrativos */}
+            {/* rotas base dos modulos administrativos */}
             <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
             <Route path="/gerenciar-alunos/:id" element={<PerfilAluno />} />
             <Route path="/gerenciar-cursos" element={<GerenciarCursos />} />
