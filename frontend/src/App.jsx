@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GerenciarAlunos from "./pages/GerenciarAlunos";
 import GerenciarCursos from "./pages/GerenciarCursos";
 import GerenciarTurmas from "./pages/GerenciarTurmas";
+import PerfilAluno from "./pages/PerfilAluno";
 
 import "./styles/global.css";
 
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             {/* Rotas de módulos administrativos */}
             <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
+            <Route path="/gerenciar-alunos/:id" element={<PerfilAluno />} />
             <Route path="/gerenciar-cursos" element={<GerenciarCursos />} />
             <Route path="/gerenciar-turmas" element={<GerenciarTurmas />} />
           </Routes>

@@ -11,7 +11,13 @@ async function postAluno(req, res) {
   res.sendStatus(201);
 }
 
+async function getAlunoProfile(req, res) {
+  const alunoProfile = await alunosService.getAlunoProfile(req.params.id);
+  res.status(200).json(alunoProfile);
+}
+
 module.exports = {
   getAlunos,
-  postAluno
+  postAluno,
+  getAlunoProfile
 };

@@ -11,7 +11,7 @@ function GerenciarAlunos() {
     // Carrega alunos uma vez ao montar a página.
     useEffect(() => {
         async function carregarAlunos() {
-            const req = await api.get('api/gerenciar-alunos');
+            const req = await api.get('/api/gerenciar-alunos');
             setAlunos(req.data);
         }
         carregarAlunos();
@@ -33,7 +33,7 @@ function GerenciarAlunos() {
                     value: 'Profile', 
                     profileLink: true,
                     renderProfile: (item_id) => 
-                        RenderProfile('/gerenciar-alunos/perfil-aluno/', 'bi bi-pencil text-black', item_id)
+                        RenderProfile('/gerenciar-alunos/', 'bi bi-pencil text-black', item_id)
                     }}/>
         </div>
     );

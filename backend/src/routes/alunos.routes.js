@@ -3,6 +3,7 @@ const alunosController = require('../controllers/alunos.controller');
 
 const routerAlunos = Router();
 
+routerAlunos.get('/:id', alunosController.getAlunoProfile);
 routerAlunos.get('/', alunosController.getAlunos);
 routerAlunos.post('/', alunosController.postAluno);
 
