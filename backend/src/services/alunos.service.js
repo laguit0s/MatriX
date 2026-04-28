@@ -1,7 +1,7 @@
 const conn = require('../config/db');
 const format = require('../utils/format.data');
 
-function buscarAlunos() {
+function getAlunos() {
   return new Promise((resolve, reject) => {
     conn.query('SELECT * FROM alunos', (error, rows) => {
       if (error) {
@@ -20,4 +20,18 @@ function buscarAlunos() {
   })
 }
 
-module.exports = buscarAlunos;
+async function postAluno(body) {
+  new Promise((resolve, reject) => {
+    conn.query(`INSERT INTO alunos (nome, cpf, data_nascimento, email, telefone) VALUES ('${body.nome}', '${body.cpf}', '${body.data_nascimento}', '${body.email}', '${body.telefone}')`, (error, rows) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve();
+    });
+  }) 
+}
+
+module.exports = {
+  getAlunos,
+  postAluno
+};

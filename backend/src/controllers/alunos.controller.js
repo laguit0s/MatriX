@@ -1,15 +1,17 @@
-const buscarAlunos = require('../services/alunos.service');
+// controller
+const alunosService = require('../services/alunos.service');
 
-async function listarAlunos(req, res) {
-  const alunos = await buscarAlunos();
+async function getAlunos(req, res) {
+  const alunos = await alunosService.getAlunos();
   res.status(200).json(alunos);
 }
 
-function cadastrarAlunos(req, res) {
-  console.log(req.body);
+async function postAluno(req, res) {
+  await alunosService.postAluno(req.body);
+  res.sendStatus(201);
 }
 
 module.exports = {
-  listarAlunos,
-  cadastrarAlunos
-}
+  getAlunos,
+  postAluno
+};
