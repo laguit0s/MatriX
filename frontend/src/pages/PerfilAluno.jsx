@@ -1,13 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import CadastroAluno from '../components/CadastroAluno';
 
 // estrutura a tela visual do registro do perfil 
 function PerfilAluno() {
-    const ppColors = ['#006eff', '#ff4800', '#00b43c', '#8400ff', '#505050'];
+    const ppColor = '#006eff'
 
     const { id } = useParams();
     let [dados, setDados] = useState(null);
+    let [editando, setEditando] = useState(false);
 
     // requisita no servidor a exibicao com formatacao visual do aluno
     useEffect(() => {
@@ -24,7 +26,9 @@ function PerfilAluno() {
 
     // aguarda termino da busca antes exibir blocos formatados em display
     return dados ? (
+        
         <div className="d-flex flex-column h-100 w-100">
+            <CadastroAluno dados={dados} title={'Editar dados'}/>
             <div className="d-flex flex-column align-items-start p-4 gap-3">
                 <Link to="/gerenciar-alunos" className='app-header__eyebrow'>
                     <i className="bi bi-house-fill"></i>
@@ -32,23 +36,27 @@ function PerfilAluno() {
                 </Link>
                 <h1 className="app-header__title">PERFIL DO ALUNO</h1>
             </div>
-            
             <div className="card shadow-sm border-0 w-100 placeholder-glow">
                 <div className="card-body p-4">
-                    <div className="d-flex align-items-center mb-4 gap-4">
-                        <div className="fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem', backgroundColor: `${ppColors[Math.floor(Math.random() * ppColors.length)]}`}}>
-                            <span>{dados.nome[0]}</span>
-                        </div>
-                        <div>
-                            <h3 className="mb-1">{dados.nome}</h3>
-                            <p className="text-muted m-0">Matrícula em: {dados.data_matricula || 'não informada'}</p>
-                            <p className='text-muted m-0'>Situação: <span class="badge text-bg-success">Matriculado</span></p>
+                    <div className="d-flex align-items-start justify-content-between mb-4 gap-4">
+                        <div className="d-flex align-items-center gap-4">
+                            <div className="fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem', backgroundColor: `${ppColor}`}}>
+                                <span>{dados.nome[0]}</span>
+                            </div>
+                            <div>
+                                <h3 className="mb-1">{dados.nome}</h3>
+                                <p className="text-muted m-0">Matrícula em: {dados.data_matricula || 'não informada'}</p>
+                                <p className="text-muted m-0">Situação: <span className="badge text-bg-success">Matriculado</span></p>
+                            </div>
                         </div>
                     </div>
 
                     <hr className="mb-4" />
 
                     <div className="row g-3">
+                        <button className="btn btn-outline-primary col" type="button" data-bs-toggle="modal" data-bs-target="#cadastro-aluno">
+                            <i className="bi bi-pencil-fill me-2"></i>Editar
+                        </button>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">cpf</label>
                             <p className="fs-6 fw-bold mb-0 text-break">{dados.cpf}</p>
@@ -68,7 +76,7 @@ function PerfilAluno() {
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
     ) : (
         <div className="d-flex justify-content-center align-items-center h-100">
             <div className="spinner-border text-primary" role="status">

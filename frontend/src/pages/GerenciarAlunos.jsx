@@ -24,7 +24,7 @@ function GerenciarAlunos() {
 
     return (
         <div className="d-flex flex-column h-100">
-            <Header title="GERENCIAR ALUNOS" Modal={CadastroAluno} modalID={"#cadastro-aluno"}/>
+            <Header title="GERENCIAR ALUNOS" Modal={() => <CadastroAluno title={'Cadastrar aluno'}/>} modalID={"#cadastro-aluno"}/>
             <DataTable 
             headerContent={tableHeaders} 
             bodyContent={alunos} 

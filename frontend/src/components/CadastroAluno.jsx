@@ -2,14 +2,14 @@ import { useState } from 'react';
 import api from '../services/api';
 
 // modal de cadastro de novo aluno
-function CadastroAluno() {
+function CadastroAluno({dados, title}) {
     // estado inicial do formulario
     const [form, setForm] = useState({
-        nome: "",
-        cpf: "",
-        data_nascimento: "",
-        telefone: "",
-        email: ""
+        nome: dados ? dados.nome : '',
+        cpf: dados ? dados.cpf : '',
+        data_nascimento: dados? dados.data_nascimento : '',
+        telefone: dados ? dados.telefone : '',
+        email: dados ? dados.email : ''
     });
 
     // atualiza o estado com os dados digitados
@@ -32,29 +32,29 @@ function CadastroAluno() {
             <div className="modal-dialog modal-dialog-centered w-100 modal-lg modal-fullscreen-md-down">
                 <div className="modal-content">
                     <div className="modal-header justify-content-center">
-                        <h1 className="modal-title text-center m-0 fs-4">Cadastrar Aluno</h1>
+                        <h1 className="modal-title text-center m-0 fs-4">{title}</h1>
                     </div>
                     <form className="modal-body" onSubmit={handleSubmit}>
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col">
                                 <label htmlFor="nome-aluno">Nome completo:</label>
-                                <input type="text" name="nome" id="nome-aluno" className="form-control" onChange={handleChange}/>
+                                <input value={dados && dados.nome} type="text" name="nome" id="nome-aluno" className="form-control" onChange={handleChange}/>
                             </div>
                             <div className="col">
                                 <label htmlFor="cpf-aluno">CPF:</label>
-                                <input type="text" name="cpf" id="cpf-aluno" className="form-control" onChange={handleChange}/>
+                                <input value={dados && dados.cpf} type="text" name="cpf" id="cpf-aluno" className="form-control" onChange={handleChange}/>
                             </div>
                             <div className="col">
                                 <label htmlFor="data-nascimento-aluno">Data de nascimento:</label>
-                                <input type="date" name="data_nascimento" id="data-nascimento-aluno" className="form-control" onChange={handleChange}/>
+                                <input value={dados && dados.data_nascimento} type="date" name="data_nascimento" id="data-nascimento-aluno" className="form-control" onChange={handleChange}/>
                             </div>
                             <div className="col">
                                 <label htmlFor="telefone-aluno">Telefone:</label>
-                                <input type="text" name="telefone" id="telefone-aluno" className="form-control" onChange={handleChange}/>
+                                <input value={dados && dados.telefone} type="text" name="telefone" id="telefone-aluno" className="form-control" onChange={handleChange}/>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="email-aluno">E-mail:</label>
-                                <input type="email" name="email" id="email-aluno" className="form-control" onChange={handleChange}/>
+                                <input value={dados && dados.email} type="email" name="email" id="email-aluno" className="form-control" onChange={handleChange}/>
                             </div>
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>
