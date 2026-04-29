@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 
-function renderProfileLink (route, icon, item_id) {
+function renderProfileLink (route, item_id, icon) {
     return (
         <Link to={`${route + item_id}`}>
-            <i className={icon}></i>
-        </Link>
+            <i className={(icon ? icon : 'bi bi-pencil') + ' btn'}></i>
+        </Link> 
     )
 } 
 

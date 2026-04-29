@@ -5,7 +5,8 @@ function DataTable({
     headerColumnClass = {},
     bodyColumnClass = {},
     propertiesIgnore = [],
-    standard = {}
+    standardStart = {},
+    standardEnd = {}
 }) {
 
     // filtra propriedades que devem ser ignoradas
@@ -42,11 +43,12 @@ function DataTable({
                 <tbody className="app-table__body">
                     {bodyContent.map((row, rowIndex) => (
                         <tr key={rowIndex}>
-                            <td>{standard.profileLink ? standard.renderProfile(bodyContent[rowIndex]['id']) : standard.value}</td>
+                            <td className={getBodyClass(0)}>{standardStart.profileLink ? standardStart.renderProfile(row['id']) : standardStart.value}</td>
                             {properties.map((prop, colIndex) => {
                                 const cellContent = row[prop];
                                 return <td key={prop} className={getBodyClass(colIndex + 1)}>{cellContent}</td>
                             })}
+                            <td className={getBodyClass(bodyContent.length - 2)}>{standardEnd.delete ? standardEnd.deleteCell(row['id']) : standardEnd.value}</td>
                         </tr>
                     ))}
                 </tbody>

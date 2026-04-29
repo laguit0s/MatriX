@@ -4,6 +4,8 @@ import api from '../services/api';
 
 // estrutura a tela visual do registro do perfil 
 function PerfilAluno() {
+    const ppColors = ['#006eff', '#ff4800', '#00b43c', '#8400ff', '#505050'];
+
     const { id } = useParams();
     let [dados, setDados] = useState(null);
 
@@ -34,7 +36,7 @@ function PerfilAluno() {
             <div className="card shadow-sm border-0 w-100 placeholder-glow">
                 <div className="card-body p-4">
                     <div className="d-flex align-items-center mb-4 gap-4">
-                        <div className="bg-primary fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem' }}>
+                        <div className="fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem', backgroundColor: `${ppColors[Math.floor(Math.random() * ppColors.length)]}`}}>
                             <span>{dados.nome[0]}</span>
                         </div>
                         <div>
