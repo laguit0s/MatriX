@@ -22,8 +22,9 @@ function CadastroAluno() {
 
     // envia os dados do aluno para a api
     const handleSubmit = async (e) => {
-        e.preventDefault(); // previne recarregamento da pagina
+        e.preventDefault(); // previne comportamento do form
         await api.post('/api/gerenciar-alunos', form);
+        window.location.reload(); // recarrega a pagina para atualizar a tabela
     }
 
     return (

@@ -19,8 +19,14 @@ async function getAlunoProfile(req, res) {
   res.status(200).json(alunoProfile);
 }
 
+async function deleteAluno(req, res) {
+  await alunosService.deleteAluno(req.params.id);
+  res.sendStatus(204);
+}
+
 module.exports = {
   getAlunos,
   postAluno,
-  getAlunoProfile
+  getAlunoProfile,
+  deleteAluno
 };

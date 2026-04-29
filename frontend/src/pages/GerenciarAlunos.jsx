@@ -20,9 +20,9 @@ function GerenciarAlunos() {
     }, []);
 
     // define o titulo das colunas da tabela de exibicao de dados
-    const tableHeaders = [<i className="bi bi-gear px-1"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", ''];
+    const tableHeaders = ['', "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", ''];
 
-    return alunos.length !== 0 ? (
+    return (
         <div className="d-flex flex-column h-100">
             <Header title="GERENCIAR ALUNOS" Modal={CadastroAluno} modalID={"#cadastro-aluno"}/>
             <DataTable 
@@ -40,15 +40,10 @@ function GerenciarAlunos() {
             standardEnd={{
                 delete: true, 
                 deleteCell: (item_id) => 
-                    DeleteCell('/gerenciar-alunos/', item_id)
+                    DeleteCell('/api/gerenciar-alunos/', item_id)
             }}/>
         </div>
-    ) : 
-    <div className="d-flex justify-content-center align-items-center h-100">
-        <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">carregando...</span>
-        </div>
-    </div>
+    )
 }
 
 // expoe acesso a base global

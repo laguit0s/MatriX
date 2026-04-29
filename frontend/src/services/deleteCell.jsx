@@ -4,6 +4,7 @@ import api from "./api";
 function DeleteCell(route, item_id, icon) {
     async function sendRequest() {
         await api.delete(route + item_id);
+        window.location.reload(); // atualiza a tabela carregando os dados do servidor
     }
     return (
         <i className={(icon ? icon : 'bi bi-trash') + ' btn'} onClick={sendRequest}></i>

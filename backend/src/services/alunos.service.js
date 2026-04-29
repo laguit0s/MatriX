@@ -33,9 +33,14 @@ async function getAlunoProfile(id) {
   return row;
 }
 
+async function deleteAluno (id) {
+  await conn.execute('DELETE FROM alunos WHERE ID = ?', [id]);
+}
+
 // exporta funcoes do servico de alunos
 module.exports = {
   getAlunos,
   postAluno,
-  getAlunoProfile
+  getAlunoProfile,
+  deleteAluno
 };

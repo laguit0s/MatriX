@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // renderiza a tabela dinamica de dados
 function DataTable({
     headerContent = [],
@@ -30,7 +32,7 @@ function DataTable({
             className="table-responsive flex-grow-1 w-100 overflow-auto app-table-shell"
             style={{ minWidth: 0, maxHeight: '100%' }}
         >
-            <table className="table table-bordered table-hover align-middle text-nowrap m-0 app-table">
+            <table className="table table-hover align-middle text-nowrap m-0 app-table">
                 <thead className="app-table__head border-bottom">
                     <tr>
                         {headerContent.map((headerLabel, colIndex) => (
@@ -46,9 +48,9 @@ function DataTable({
                             <td className={getBodyClass(0)}>{standardStart.profileLink ? standardStart.renderProfile(row['id']) : standardStart.value}</td>
                             {properties.map((prop, colIndex) => {
                                 const cellContent = row[prop];
-                                return <td key={prop} className={getBodyClass(colIndex + 1)}>{cellContent}</td>
+                                return <td key={prop} className={(getBodyClass(colIndex + 1))}>{cellContent}</td>
                             })}
-                            <td className={getBodyClass(bodyContent.length - 2)}>{standardEnd.delete ? standardEnd.deleteCell(row['id']) : standardEnd.value}</td>
+                            <td className={getBodyClass(properties.length + 1)}>{standardEnd.delete ? standardEnd.deleteCell(row['id']) : standardEnd.value}</td>
                         </tr>
                     ))}
                 </tbody>
