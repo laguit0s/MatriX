@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import api from '../services/api';
+import { IMask, IMaskInput } from 'react-imask';
+import { z } from 'zod';
 
 // modal de cadastro de novo aluno
 function CadastroAluno({dados, title}) {
@@ -38,23 +40,23 @@ function CadastroAluno({dados, title}) {
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col">
                                 <label htmlFor="nome-aluno">Nome completo:</label>
-                                <input value={dados && dados.nome} type="text" name="nome" id="nome-aluno" className="form-control" onChange={handleChange}/>
+                                <IMaskInput value={dados && dados.nome} className='form-control' onAccept={(value, mask) => setForm(prev => ({...prev, nome: value}))}></IMaskInput>
                             </div>
                             <div className="col">
-                                <label htmlFor="cpf-aluno">CPF:</label>
-                                <input value={dados && dados.cpf} type="text" name="cpf" id="cpf-aluno" className="form-control" onChange={handleChange}/>
+                                <label htmlFor="cpf-aluno">cpf:</label>
+                                <IMaskInput value={dados && dados.cpf} className='form-control' mask="000.000.000-00" onAccept={(value, mask) => setForm(prev => ({...prev, cpf: mask.unmaskedValue}))}></IMaskInput>
                             </div>
                             <div className="col">
                                 <label htmlFor="data-nascimento-aluno">Data de nascimento:</label>
-                                <input value={dados && dados.data_nascimento} type="date" name="data_nascimento" id="data-nascimento-aluno" className="form-control" onChange={handleChange}/>
+                                <IMaskInput value={dados && dados.data_nascimento} className='form-control' mask="00/00/0000" placeholder='DD/MM/AAAA' onAccept={(value, mask) => setForm(prev => ({...prev, data_nascimento: mask.unmaskedValue}))}></IMaskInput>
                             </div>
                             <div className="col">
                                 <label htmlFor="telefone-aluno">Telefone:</label>
-                                <input value={dados && dados.telefone} type="text" name="telefone" id="telefone-aluno" className="form-control" onChange={handleChange}/>
+                                <IMaskInput value={dados && dados.telefone} className='form-control' mask="(00) 00000-0000" onAccept={(value, mask) => setForm(prev => ({...prev, telefone: mask.unmaskedValue}))}></IMaskInput>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="email-aluno">E-mail:</label>
-                                <input value={dados && dados.email} type="email" name="email" id="email-aluno" className="form-control" onChange={handleChange}/>
+                                <IMaskInput value={dados && dados.email} className='form-control' onAccept={(value) => setForm(prev => ({...prev, email: value}))}></IMaskInput>
                             </div>
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>
