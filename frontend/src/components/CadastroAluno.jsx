@@ -1,33 +1,40 @@
-import { useState } from 'react';
 import api from '../services/api';
 import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, Controller } from 'react-hook-form';
 
 // modal de cadastro de novo aluno
 function CadastroAluno({dados, title}) {
-    // estado inicial do formulario
-    const [form, setForm] = useState({
+    const alunoSchema = z.object({
+        nome: z.string().min(1, 'O nome é obrigatório'),
+        cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
+        data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 10 dígitos'),
+        telefone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
+        email: z.string().email('E-mail inválido')
+    })
+
+    const { control, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
         nome: dados ? dados.nome : '',
         cpf: dados ? dados.cpf : '',
-        data_nascimento: dados? dados.data_nascimento : '',
+        data_nascimento: dados ? dados.data_nascimento : '',
         telefone: dados ? dados.telefone : '',
         email: dados ? dados.email : ''
-    });
-
-    // atualiza o estado com os dados digitados
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        })
-    }
+    }});
 
     // envia os dados do aluno para a api
-    const handleSubmit = async (e) => {
-        e.preventDefault(); // previne comportamento do form
-        await api.post('/api/gerenciar-alunos', form);
+    const onSubmit = async (data) => {
+        console.log('deu bom')
+        await api.post('/api/gerenciar-alunos', data);
         window.location.reload(); // recarrega a pagina para atualizar a tabela
     }
+
+    const onError = (errors) => {
+        console.log("deu ruim:", errors);
+    };
+
+    const { watch } = useForm();
+    console.log(watch());
 
     return (
         <div className="modal fade p-0" tabIndex="-1" id="cadastro-aluno" data-bs-backdrop="static" data-bs-keyboard="false" style={{zIndex: "5000"}}>
@@ -36,27 +43,42 @@ function CadastroAluno({dados, title}) {
                     <div className="modal-header justify-content-center">
                         <h1 className="modal-title text-center m-0 fs-4">{title}</h1>
                     </div>
-                    <form className="modal-body" onSubmit={handleSubmit}>
+                    <form className="modal-body" onSubmit={handleSubmit(onSubmit, onError)}>
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col">
                                 <label htmlFor="nome-aluno">Nome completo:</label>
-                                <IMaskInput value={dados && dados.nome} className='form-control' onAccept={(value, mask) => setForm(prev => ({...prev, nome: value}))}></IMaskInput>
+                                <Controller name="nome" control={control} render={({ field }) => (
+                                    <input {...field} className='form-control'></input>
+                                )}>
+                                </Controller>
                             </div>
                             <div className="col">
-                                <label htmlFor="cpf-aluno">cpf:</label>
-                                <IMaskInput value={dados && dados.cpf} className='form-control' mask="000.000.000-00" onAccept={(value, mask) => setForm(prev => ({...prev, cpf: mask.unmaskedValue}))}></IMaskInput>
+                                <label htmlFor="cpf-aluno">CPF:</label>
+                                <Controller name="cpf" control={control} render={({ field }) => (
+                                    <IMaskInput value={field.value} className='form-control' mask="000.000.000-00" onAccept={(value, mask) => field.onChange(mask.unmaskedValue)}></IMaskInput>
+                                )}>
+                                </Controller>
                             </div>
                             <div className="col">
                                 <label htmlFor="data-nascimento-aluno">Data de nascimento:</label>
-                                <IMaskInput value={dados && dados.data_nascimento} className='form-control' mask="00/00/0000" placeholder='DD/MM/AAAA' onAccept={(value, mask) => setForm(prev => ({...prev, data_nascimento: mask.unmaskedValue}))}></IMaskInput>
+                                <Controller name="data_nascimento" control={control} render={({ field }) => (
+                                    <IMaskInput value={field.value} className='form-control' mask="00/00/0000" placeholder='DD/MM/AAAA' onAccept={(value) => field.onChange(value)}></IMaskInput>
+                                )}>
+                                </Controller>
                             </div>
                             <div className="col">
                                 <label htmlFor="telefone-aluno">Telefone:</label>
-                                <IMaskInput value={dados && dados.telefone} className='form-control' mask="(00) 00000-0000" onAccept={(value, mask) => setForm(prev => ({...prev, telefone: mask.unmaskedValue}))}></IMaskInput>
+                                <Controller name="telefone" control={control} render={({ field }) => (
+                                    <IMaskInput value={field.value} className='form-control' mask="(00) 00000-0000" onAccept={(value, mask) => field.onChange(mask.unmaskedValue)}></IMaskInput>
+                                )}>
+                                </Controller>
                             </div>
                             <div className="col-12">
                                 <label htmlFor="email-aluno">E-mail:</label>
-                                <IMaskInput value={dados && dados.email} className='form-control' onAccept={(value) => setForm(prev => ({...prev, email: value}))}></IMaskInput>
+                                <Controller name="email" control={control} render={({ field }) => (
+                                    <input {...field} className='form-control'></input>
+                                )}>
+                                </Controller>
                             </div>
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>
