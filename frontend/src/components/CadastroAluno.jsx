@@ -24,17 +24,13 @@ function CadastroAluno({dados, title}) {
 
     // envia os dados do aluno para a api
     const onSubmit = async (data) => {
-        console.log('deu bom')
         await api.post('/api/gerenciar-alunos', data);
         window.location.reload(); // recarrega a pagina para atualizar a tabela
     }
 
     const onError = (errors) => {
-        console.log("deu ruim:", errors);
+        console.log("Erro no envio do formulário:", errors);
     };
-
-    const { watch } = useForm();
-    console.log(watch());
 
     return (
         <div className="modal fade p-0" tabIndex="-1" id="cadastro-aluno" data-bs-backdrop="static" data-bs-keyboard="false" style={{zIndex: "5000"}}>
@@ -51,6 +47,7 @@ function CadastroAluno({dados, title}) {
                                     <input {...field} className='form-control'></input>
                                 )}>
                                 </Controller>
+                                {errors.nome && (<p className='text-danger'>{errors.nome.message}</p>)}
                             </div>
                             <div className="col">
                                 <label htmlFor="cpf-aluno">CPF:</label>
@@ -58,6 +55,7 @@ function CadastroAluno({dados, title}) {
                                     <IMaskInput value={field.value} className='form-control' mask="000.000.000-00" onAccept={(value, mask) => field.onChange(mask.unmaskedValue)}></IMaskInput>
                                 )}>
                                 </Controller>
+                                {errors.cpf && (<p className='text-danger'>{errors.cpf.message}</p>)}
                             </div>
                             <div className="col">
                                 <label htmlFor="data-nascimento-aluno">Data de nascimento:</label>
@@ -65,6 +63,7 @@ function CadastroAluno({dados, title}) {
                                     <IMaskInput value={field.value} className='form-control' mask="00/00/0000" placeholder='DD/MM/AAAA' onAccept={(value) => field.onChange(value)}></IMaskInput>
                                 )}>
                                 </Controller>
+                                {errors.data_nascimento && (<p className='text-danger'>{errors.data_nascimento.message}</p>)}
                             </div>
                             <div className="col">
                                 <label htmlFor="telefone-aluno">Telefone:</label>
@@ -72,6 +71,7 @@ function CadastroAluno({dados, title}) {
                                     <IMaskInput value={field.value} className='form-control' mask="(00) 00000-0000" onAccept={(value, mask) => field.onChange(mask.unmaskedValue)}></IMaskInput>
                                 )}>
                                 </Controller>
+                                {errors.telefone && (<p className='text-danger'>{errors.telefone.message}</p>)}
                             </div>
                             <div className="col-12">
                                 <label htmlFor="email-aluno">E-mail:</label>
@@ -79,6 +79,7 @@ function CadastroAluno({dados, title}) {
                                     <input {...field} className='form-control'></input>
                                 )}>
                                 </Controller>
+                                {errors.email && (<p className='text-danger'>{errors.email.message}</p>)}
                             </div>
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>

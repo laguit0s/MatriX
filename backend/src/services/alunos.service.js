@@ -16,7 +16,7 @@ async function getAlunos() {
 
 // insere novo aluno no banco de dados com parametros seguros
 async function postAluno(body) {
-  await conn.execute('INSERT INTO alunos (nome, cpf, data_nascimento, email, telefone) VALUES (?, ?, ?, ?, ?)', [body.nome, body.cpf, body.data_nascimento, body.email, body.telefone]);
+  await conn.execute(`INSERT INTO alunos (nome, cpf, data_nascimento, email, telefone) VALUES (?, ?, STR_TO_DATE(?, '%d/%m/%Y'), ?, ?)`, [body.nome, body.cpf, body.data_nascimento, body.email, body.telefone]);
 }
 
 // busca aluno por id e formata os dados principais
