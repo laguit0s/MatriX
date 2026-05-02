@@ -5,6 +5,18 @@ async function getCursos(req, res) {
     res.status(200).json(cursos);
 }
 
+async function postCurso(req, res) {
+    await cursosService.postCurso(req.body);
+    res.sendStatus(201);
+}
+
+async function deleteCurso(req, res) {
+    await cursosService.deleteCurso(req.params.id);
+    res.sendStatus(204);
+}
+
 module.exports = {
-    getCursos
+    getCursos,
+    postCurso,
+    deleteCurso
 }

@@ -20,7 +20,7 @@ function GerenciarAlunos() {
     }, []);
 
     // define o titulo das colunas da tabela de exibicao de dados
-    const tableHeaders = ['', "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", ''];
+    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", ''];
 
     return (
         <div className="d-flex flex-column h-100">

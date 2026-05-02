@@ -1,4 +1,4 @@
-import CadastroAluno from "../components/CadastroAluno";
+import CadastroCurso from "../components/CadastroCurso";
 import DataTable from "../components/DataTable";
 import Header from "../components/Header";
 import api from "../services/api";
@@ -20,11 +20,11 @@ function GerenciarCursos() {
     }, []);
 
     // define o titulo das colunas da tabela de exibicao de dados
-    const tableHeaders = ['', "NOME", "CÓDIGO", "VALOR", "COBRANÇA", ''];
+    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CÓDIGO", "VALOR", "COBRANÇA", ''];
 
     return (
         <div className="d-flex flex-column h-100">
-            <Header title="GERENCIAR CURSOS" Modal={() => <CadastroAluno title={'Cadastrar curso'}/>} modalID={"#cadastro-curso"}/>
+            <Header title="GERENCIAR CURSOS" Modal={() => <CadastroCurso title={'Cadastrar curso'}/>} modalID={"#cadastro-curso"}/>
             <DataTable 
             headerContent={tableHeaders} 
             bodyContent={cursos} 
@@ -35,7 +35,7 @@ function GerenciarCursos() {
                 value: 'Profile', 
                 profileLink: true,
                 renderProfile: (item_id) => 
-                    RenderProfile('/gerenciar-cursos/', item_id, 'bi bi-person-square')
+                    RenderProfile('/gerenciar-cursos/', item_id, 'bi bi-mortarboard-fill')
             }}
             standardEnd={{
                 delete: true, 
