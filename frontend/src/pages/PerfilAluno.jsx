@@ -9,7 +9,6 @@ function PerfilAluno() {
 
     const { id } = useParams();
     let [dados, setDados] = useState(null);
-    let [editando, setEditando] = useState(false);
 
     // requisita no servidor a exibicao com formatacao visual do aluno
     useEffect(() => {

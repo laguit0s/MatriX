@@ -5,6 +5,7 @@ const routerAlunos = Router();
 
 // define rotas de alunos
 routerAlunos.get('/:id', alunosController.getAlunoProfile);
+routerAlunos.patch('/:id', alunosController.patchAluno)
 routerAlunos.get('/', alunosController.getAlunos);
 routerAlunos.post('/', alunosController.postAluno);
 routerAlunos.delete('/:id', alunosController.deleteAluno);

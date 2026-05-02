@@ -24,9 +24,15 @@ async function deleteAluno(req, res) {
   res.sendStatus(204);
 }
 
+async function patchAluno(req, res) {
+  const result = await alunosService.patchAluno(req.body, req.params.id);
+  result ? res.status(400).json({ message: result }) : res.sendStatus(200);
+}
+
 module.exports = {
   getAlunos,
   postAluno,
   getAlunoProfile,
-  deleteAluno
+  deleteAluno,
+  patchAluno
 };

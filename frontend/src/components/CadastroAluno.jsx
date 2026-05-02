@@ -4,28 +4,40 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 
+const onlyDigits = (value) => (value ? String(value).replace(/\D/g, '') : '');
+
 // modal de cadastro de novo aluno
 function CadastroAluno({dados, title}) {
     const alunoSchema = z.object({
         nome: z.string().min(1, 'O nome é obrigatório'),
         cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
-        data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 10 dígitos'),
+        data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 8 dígitos'),
         telefone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
         email: z.string().email('E-mail inválido')
     })
 
-    const { control, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
+    const { control, handleSubmit, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
         nome: dados ? dados.nome : '',
-        cpf: dados ? dados.cpf : '',
+        cpf: dados ? onlyDigits(dados.cpf) : '',
         data_nascimento: dados ? dados.data_nascimento : '',
-        telefone: dados ? dados.telefone : '',
+        telefone: dados ? onlyDigits(dados.telefone) : '',
         email: dados ? dados.email : ''
     }});
 
     // envia os dados do aluno para a api
     const onSubmit = async (data) => {
-        await api.post('/api/gerenciar-alunos', data);
-        window.location.reload(); // recarrega a pagina para atualizar a tabela
+        const payload = Object.fromEntries(
+            Object.entries(data).filter(([campo]) => dirtyFields[campo])
+        )
+
+        if (dados) {
+            if (Object.keys(payload).length === 0) return;
+            await api.patch(`/api/gerenciar-alunos/${dados.id}`, payload);
+        } else {
+            await api.post('/api/gerenciar-alunos', data);
+        }
+
+        window.location.reload();
     }
 
     const onError = (errors) => {
