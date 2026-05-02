@@ -4,7 +4,7 @@ const format = require('../utils/format.data');
 
 // busca todos os alunos e formata os dados principais
 async function getAlunos() {
-  let [rows] = await conn.query('SELECT * FROM alunos');
+  let [rows] = await conn.query('SELECT * FROM alunos ORDER BY nome ASC');
   rows.forEach(row => {
     row.telefone = format.phone(row.telefone);
     row.cpf = format.CPF(row.cpf);
