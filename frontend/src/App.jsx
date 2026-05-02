@@ -4,6 +4,7 @@ import GerenciarAlunos from "./pages/GerenciarAlunos";
 import GerenciarCursos from "./pages/GerenciarCursos";
 import GerenciarTurmas from "./pages/GerenciarTurmas";
 import PerfilAluno from "./pages/PerfilAluno";
+import PerfilCurso from "./pages/PerfilCurso";
 
 import "./styles/global.css";
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
             <Route path="/gerenciar-alunos/:id" element={<PerfilAluno />} />
             <Route path="/gerenciar-cursos" element={<GerenciarCursos />} />
+            <Route path="/gerenciar-cursos/:id" element={<PerfilCurso />} />
             <Route path="/gerenciar-turmas" element={<GerenciarTurmas />} />
           </Routes>
         </div>

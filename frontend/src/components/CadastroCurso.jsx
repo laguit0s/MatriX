@@ -71,7 +71,6 @@ function CadastroCurso({dados, title}) {
                                     className="form-control"
                                     mask={Number}
                                     scale={2}
-                                    signed={false}
                                     thousandsSeparator="."
                                     radix=","
                                     mapToRadix={['.']}
