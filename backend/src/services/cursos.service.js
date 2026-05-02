@@ -1,7 +1,11 @@
 const conn = require('../config/db');
+const format = require('../utils/format.data');
 
 async function getCursos() {
     const [cursos] = await conn.query('SELECT * FROM cursos ORDER BY nome ASC');
+    cursos.forEach(curso => {
+        curso.valor = format.valor(curso.valor);
+    })
     return cursos;
 }
 
@@ -15,6 +19,7 @@ async function deleteCurso(id) {
 
 async function getCurso(id) {
     const [dados] = await conn.execute('SELECT * FROM cursos WHERE id = ?', [id]);
+    dados[0].valor = format.valor(dados[0].valor);
     return dados[0];
 }
 

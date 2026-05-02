@@ -3,6 +3,7 @@ import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 
 const onlyDigits = (value) => (value ? String(value).replace(/\D/g, '') : '');
 
@@ -13,15 +14,33 @@ function CadastroAluno({dados, title}) {
         cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
         data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 8 dígitos'),
         telefone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
-        email: z.string().email('E-mail inválido')
+        email: z.string().email('E-mail inválido'),
+        curso_id: z.string().optional(),
+        turma: z.string().optional()
     })
+
+    const [cursos, setCursos] = useState([]);
+
+    useEffect(() => {
+        async function loadCursos() {
+            try {
+                const res = await api.get('/api/gerenciar-cursos');
+                setCursos(res.data || []);
+            } catch (e) {
+                console.error('erro ao buscar cursos', e);
+            }
+        }
+        loadCursos();
+    }, []);
 
     const { control, handleSubmit, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
         nome: dados ? dados.nome : '',
         cpf: dados ? onlyDigits(dados.cpf) : '',
         data_nascimento: dados ? dados.data_nascimento : '',
         telefone: dados ? onlyDigits(dados.telefone) : '',
-        email: dados ? dados.email : ''
+        email: dados ? dados.email : '',
+        curso_id: dados ? (dados.curso_id ? String(dados.curso_id) : '') : '',
+        turma: dados ? (dados.turma ? dados.turma : '') : ''
     }});
 
     // envia os dados do aluno para a api
@@ -92,6 +111,23 @@ function CadastroAluno({dados, title}) {
                                 )}>
                                 </Controller>
                                 {errors.email && (<p className='text-danger'>{errors.email.message}</p>)}
+                            </div>
+                            <div className="col">
+                                <label>Curso:</label>
+                                <Controller name="curso_id" control={control} render={({ field }) => (
+                                    <select className='form-select' {...field}>
+                                        <option value="">Selecione um curso</option>
+                                        {cursos.map(c => (
+                                            <option key={c.id} value={c.id}>{c.nome}</option>
+                                        ))}
+                                    </select>
+                                )} />
+                            </div>
+                            <div className="col">
+                                <label>Turma:</label>
+                                <Controller name="turma" control={control} render={({ field }) => (
+                                    <input {...field} className='form-control' />
+                                )} />
                             </div>
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>

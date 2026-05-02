@@ -14,9 +14,15 @@ function phone(phone) {
     return phone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
 }
 
+function valor(valor) {
+    const formatado = new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" }).format(valor)
+    return formatado;
+}
+
 // exporta utilitarios de formatacao
 module.exports = {
     CPF, 
     date,
-    phone
+    phone,
+    valor
 }
