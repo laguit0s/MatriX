@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const routerAlunos = require('./routes/alunos.routes');
 const routerCursos = require('./routes/cursos.routes');
+const routerTurmas = require('./routes/turmas.routes');
 require('dotenv').config();
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.json());
 // rota principal de alunos
 app.use('/api/gerenciar-alunos', routerAlunos);
 app.use('/api/gerenciar-cursos', routerCursos);
+app.use('/api/gerenciar-turmas', routerTurmas);
 
 const PORT = process.env.PORT || 5000;
 

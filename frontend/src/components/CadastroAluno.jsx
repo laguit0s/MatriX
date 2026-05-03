@@ -9,39 +9,42 @@ const onlyDigits = (value) => (value ? String(value).replace(/\D/g, '') : '');
 
 // modal de cadastro de novo aluno
 function CadastroAluno({dados, title}) {
+    let [cursos, setCursos] = useState(null);
+    let [turmas, setTurmas] = useState(null);
+
     const alunoSchema = z.object({
         nome: z.string().min(1, 'O nome é obrigatório'),
         cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
         data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 8 dígitos'),
         telefone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
-        email: z.string().email('E-mail inválido'),
-        curso_id: z.string().optional(),
-        turma: z.string().optional()
+        email: z.string().email('E-mail inválido')
     })
 
-    const [cursos, setCursos] = useState([]);
-
-    useEffect(() => {
-        async function loadCursos() {
-            try {
-                const res = await api.get('/api/gerenciar-cursos');
-                setCursos(res.data || []);
-            } catch (e) {
-                console.error('erro ao buscar cursos', e);
-            }
-        }
-        loadCursos();
-    }, []);
-
-    const { control, handleSubmit, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
+    const { control, watch, register, handleSubmit, setValue, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
         nome: dados ? dados.nome : '',
         cpf: dados ? onlyDigits(dados.cpf) : '',
         data_nascimento: dados ? dados.data_nascimento : '',
         telefone: dados ? onlyDigits(dados.telefone) : '',
         email: dados ? dados.email : '',
-        curso_id: dados ? (dados.curso_id ? String(dados.curso_id) : '') : '',
-        turma: dados ? (dados.turma ? dados.turma : '') : ''
+        'curso-aluno': '',
+        'turma-aluno': ''
     }});
+
+    useEffect(() => {
+        async function carregarCursos() {
+            const dados = await api.get('/api/gerenciar-cursos');
+            setCursos(dados.data);
+        }
+        async function carregarTurmas() {
+            const dados = await api.get('/api/gerenciar-turmas');
+            setTurmas(dados.data);
+        }
+        if (!dados && cursos?.length && !watch('curso-aluno')) {
+            setValue('curso-aluno', cursos[0].id);
+        }
+        carregarCursos();
+        carregarTurmas();
+    }, [cursos, dados, watch, setValue]);
 
     // envia os dados do aluno para a api
     const onSubmit = async (data) => {
@@ -112,23 +115,30 @@ function CadastroAluno({dados, title}) {
                                 </Controller>
                                 {errors.email && (<p className='text-danger'>{errors.email.message}</p>)}
                             </div>
-                            <div className="col">
-                                <label>Curso:</label>
-                                <Controller name="curso_id" control={control} render={({ field }) => (
-                                    <select className='form-select' {...field}>
-                                        <option value="">Selecione um curso</option>
-                                        {cursos.map(c => (
-                                            <option key={c.id} value={c.id}>{c.nome}</option>
-                                        ))}
-                                    </select>
-                                )} />
-                            </div>
-                            <div className="col">
-                                <label>Turma:</label>
-                                <Controller name="turma" control={control} render={({ field }) => (
-                                    <input {...field} className='form-control' />
-                                )} />
-                            </div>
+                            {!dados && (
+                                <>
+                                    <div className="col">
+                                        <label>Curso:</label>
+                                        <select className='form-select' {...register('curso-aluno')}>
+                                            {
+                                                cursos && cursos.map((curso, i) => (
+                                                    <option key={i} value={curso.id}>{curso.nome}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                    <div className="col">
+                                        <label>Turma:</label>
+                                        <select className='form-select' {...register('turma-aluno')}>
+                                            {
+                                                turmas && turmas.filter(turma => turma.id_curso == watch('curso-aluno') && turma.status === 'aberta').map((turma, i) => (
+                                                    <option key={i} value={turma.id}>{turma.nome}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    </div>
+                                </>
+                            )}
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>
                                 <button type="button" className="btn btn-secondary w-100" data-bs-dismiss="modal">Sair</button>
