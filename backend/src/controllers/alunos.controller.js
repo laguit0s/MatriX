@@ -26,7 +26,12 @@ async function deleteAluno(req, res) {
 
 async function patchAluno(req, res) {
   const result = await alunosService.patchAluno(req.body, req.params.id);
-  result ? res.status(400).json({ message: result }) : res.sendStatus(200);
+  
+  if (result === 'Nenhum campo foi modificado.') {
+    res.status(400).json({ message: result });
+  } else {
+    res.status(200).json(result); 
+  }
 }
 
 module.exports = {
