@@ -16,7 +16,28 @@ async function getAlunos() {
 
 // insere novo aluno no banco de dados com parametros seguros
 async function postAluno(body) {
-  await conn.execute(`INSERT INTO alunos (nome, cpf, data_nascimento, email, telefone) VALUES (?, ?, STR_TO_DATE(?, '%d/%m/%Y'), ?, ?)`, [body.nome, body.cpf, body.data_nascimento, body.email, body.telefone]);
+  console.log(body);
+
+  const anoAtual = new Date().getFullYear();
+
+  const [rowTurmas] = await conn.execute('SELECT numero FROM turmas WHERE id = ?', [body.turma]);
+  const [rowAlunos] = await conn.execute('SELECT COUNT(*) AS total FROM matriculas WHERE id_turma = ?', [body.turma]);
+  const [rowSigla] = await conn.execute('SELECT cod FROM cursos WHERE id = ?', [body.curso]);
+
+  const numeroTurma = rowTurmas[0].numero;
+  let totalAlunos = rowAlunos[0].total + 1;
+  const sigla = rowSigla[0].cod;
+  
+  if (totalAlunos <= 0) {
+    totalAlunos = 1;
+  }
+
+  const nomeMatricula = `${anoAtual}.${String(numeroTurma).padStart(2, '0')}.${sigla}.${String(totalAlunos).padStart(3, '0')}`;
+
+  const [result] = await conn.execute(`INSERT INTO alunos (nome, cpf, data_nascimento, email, telefone) VALUES (?, ?, STR_TO_DATE(?, '%d/%m/%Y'), ?, ?)`, [body.nome, body.cpf, body.data_nascimento, body.email, body.telefone]);
+  const id = result.insertId;
+  
+  await conn.execute('INSERT INTO matriculas (id_aluno, id_curso, id_turma, nome) VALUES (?, ?, ?, ?)', [id, body.curso, body.turma, nomeMatricula]);
 }
 
 // busca aluno por id e formata os dados principais

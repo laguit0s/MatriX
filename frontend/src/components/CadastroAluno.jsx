@@ -17,7 +17,9 @@ function CadastroAluno({dados, title}) {
         cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
         data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 8 dígitos'),
         telefone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
-        email: z.string().email('E-mail inválido')
+        email: z.string().email('E-mail inválido'),
+        curso: z.string(),
+        turma: z.string()
     })
 
     const { control, watch, register, handleSubmit, setValue, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
@@ -26,8 +28,8 @@ function CadastroAluno({dados, title}) {
         data_nascimento: dados ? dados.data_nascimento : '',
         telefone: dados ? onlyDigits(dados.telefone) : '',
         email: dados ? dados.email : '',
-        'curso-aluno': '',
-        'turma-aluno': ''
+        curso: '',
+        turma: ''
     }});
 
     useEffect(() => {
@@ -39,12 +41,15 @@ function CadastroAluno({dados, title}) {
             const dados = await api.get('/api/gerenciar-turmas');
             setTurmas(dados.data);
         }
-        if (!dados && cursos?.length && !watch('curso-aluno')) {
-            setValue('curso-aluno', cursos[0].id);
+        if (!dados && cursos?.length && !watch('curso')) {
+            setValue('curso', String(cursos[0].id));
+        }
+        if (!dados && turmas?.length && !watch('turma')) {
+            setValue('turma', String(turmas[0].id));
         }
         carregarCursos();
         carregarTurmas();
-    }, [cursos, dados, watch, setValue]);
+    }, [cursos, turmas, dados, watch, setValue]);
 
     // envia os dados do aluno para a api
     const onSubmit = async (data) => {
@@ -119,19 +124,19 @@ function CadastroAluno({dados, title}) {
                                 <>
                                     <div className="col">
                                         <label>Curso:</label>
-                                        <select className='form-select' {...register('curso-aluno')}>
+                                        <select className='form-select' {...register('curso')}>
                                             {
                                                 cursos && cursos.map((curso, i) => (
-                                                    <option key={i} value={curso.id}>{curso.nome}</option>
+                                                    <option key={i} value={String(curso.id)}>{curso.nome}</option>
                                                 ))
                                             }
                                         </select>
                                     </div>
                                     <div className="col">
                                         <label>Turma:</label>
-                                        <select className='form-select' {...register('turma-aluno')}>
+                                        <select className='form-select' {...register('turma')}>
                                             {
-                                                turmas && turmas.filter(turma => turma.id_curso == watch('curso-aluno') && turma.status === 'aberta').map((turma, i) => (
+                                                turmas && turmas.filter(turma => turma.id_curso == watch('curso') && turma.status === 'aberta').map((turma, i) => (
                                                     <option key={i} value={turma.id}>{turma.nome}</option>
                                                 ))
                                             }
