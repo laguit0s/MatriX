@@ -1,10 +1,10 @@
-// const conn = require('../config/db');
+const prisma = require('../config/db');
 
-// async function getTurmas() {
-//     const [dados] = await conn.query('SELECT * FROM turmas');
-//     return dados;
-// }
+async function getTurmas() {
+    const turmas = await prisma.turma.findMany();
+    return turmas;
+}
 
-// module.exports = {
-//     getTurmas
-// }
+module.exports = {
+    getTurmas
+}

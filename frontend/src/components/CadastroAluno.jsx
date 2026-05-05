@@ -28,8 +28,8 @@ function CadastroAluno({dados, title}) {
         data_nascimento: dados ? dados.data_nascimento : '',
         telefone: dados ? onlyDigits(dados.telefone) : '',
         email: dados ? dados.email : '',
-        curso: '',
-        turma: ''
+        curso: null,
+        turma: null
     }});
 
     useEffect(() => {
@@ -136,7 +136,7 @@ function CadastroAluno({dados, title}) {
                                         <label>Turma:</label>
                                         <select className='form-select' {...register('turma')}>
                                             {
-                                                turmas && turmas.filter(turma => turma.id_curso == watch('curso') && turma.status === 'aberta').map((turma, i) => (
+                                                turmas && turmas.filter(turma => turma.cursoId == watch('curso') && turma.status === 'aberta').map((turma, i) => (
                                                     <option key={i} value={turma.id}>{turma.nome}</option>
                                                 ))
                                             }

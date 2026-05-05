@@ -41,7 +41,7 @@ model Turma {
   id         Int          @id @default(autoincrement())
   cursoId    Int
   nome       String       @unique
-  ano        DateTime     @default(now())
+  ano        Int
   numero     Int
   qtd_vagas  Int
   qtd_alunos Int

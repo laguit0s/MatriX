@@ -14,31 +14,42 @@ async function getAlunos() {
   return rows;
 }
 
+async function createMatricula(alunoId, cursoId, turmaId) {
+  let nomeTurma = await prisma.turma.findUnique({
+    where: { id: Number(turmaId) },
+    select: { nome: true }
+  }); nomeTurma = nomeTurma.nome;
+
+  let numeroMatriculas = await prisma.matricula.count({
+    where: {
+      IdTurma: Number(turmaId)
+    }
+  }); 
+  
+  if (numeroMatriculas <= 0) {
+    numeroMatriculas = 1;
+  } else {
+    ++numeroMatriculas;
+  }
+
+  const nomeMatricula = `${nomeTurma}.${String(numeroMatriculas).padStart(3, "0")}`;
+
+  await prisma.matricula.create({
+    data: {
+      alunoId: Number(alunoId),
+      cursoId: Number(cursoId),
+      turmaId: Number(turmaId),
+      nome: nomeMatricula
+    }
+  })
+}
+
 // insere novo aluno no banco de dados com parametros seguros
 async function postAluno(body) {
-  // const anoAtual = new Date().getFullYear();
-
-  // const [rowTurmas] = await conn.execute('SELECT numero FROM turmas WHERE id = ?', [body.turma]);
-  // const [rowAlunos] = await conn.execute('SELECT COUNT(*) AS total FROM matriculas WHERE id_turma = ?', [body.turma]);
-  // const [rowSigla] = await conn.execute('SELECT cod FROM cursos WHERE id = ?', [body.curso]);
-
-  // const numeroTurma = rowTurmas[0].numero;
-  // let totalAlunos = rowAlunos[0].total + 1;
-  // const sigla = rowSigla[0].cod;
-  
-  // if (totalAlunos <= 0) {
-  //   totalAlunos = 1;
-  // }
-
-  // const nomeMatricula = `${anoAtual}.${String(numeroTurma).padStart(2, '0')}.${sigla}.${String(totalAlunos).padStart(3, '0')}`;
-
-  // const [result] = await conn.execute(`INSERT INTO alunos (nome, cpf, data_nascimento, email, telefone) VALUES (?, ?, STR_TO_DATE(?, '%d/%m/%Y'), ?, ?)`, [body.nome, body.cpf, body.data_nascimento, body.email, body.telefone]);
-  // const id = result.insertId;
-
   const partesData = body.data_nascimento.split('/'); // ["24", "05", "2007"]
   const dataNascimentoIso = new Date(`${partesData[2]}-${partesData[1]}-${partesData[0]}T12:00:00Z`);
   
-  await prisma.aluno.create({
+  const aluno = await prisma.aluno.create({
     data: {
       nome: body.nome,
       cpf: body.cpf,
@@ -47,6 +58,10 @@ async function postAluno(body) {
       telefone: body.telefone
     }
   });
+
+  if (body.curso && body.turma) {
+    createMatricula(aluno.id, body.curso, body.turma);
+  }
 }
 
 // busca aluno por id e formata os dados principais
