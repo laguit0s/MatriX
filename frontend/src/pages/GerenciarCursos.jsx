@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 // constroi a tela principal para gerenciar registros e tabela
 function GerenciarCursos() {
-    const [cursos, setCursos] = useState([]);
+    const [cursos, setCursos] = useState(null);
 
     // faz leitura dos recursos do servidor e popula o estado da tabela
     useEffect(() => {
@@ -22,7 +22,7 @@ function GerenciarCursos() {
     // define o titulo das colunas da tabela de exibicao de dados
     const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CÓDIGO", "VALOR", "COBRANÇA", ''];
 
-    return (
+    return cursos ? (
         <div className="d-flex flex-column h-100">
             <Header title="GERENCIAR CURSOS" Modal={() => <CadastroCurso title={'Cadastrar curso'}/>} modalID={"#cadastro-curso"}/>
             <DataTable 
@@ -42,6 +42,12 @@ function GerenciarCursos() {
                 deleteCell: (item_id) => 
                     DeleteCell('/api/gerenciar-cursos/', item_id)
             }}/>
+        </div>
+    ) : (
+        <div className="d-flex justify-content-center align-items-center h-100">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">carregando...</span>
+            </div>
         </div>
     )
 }

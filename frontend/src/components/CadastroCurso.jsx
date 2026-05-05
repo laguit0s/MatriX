@@ -15,7 +15,7 @@ function CadastroCurso({dados, title}) {
         cobranca: z.coerce.string()
     })
 
-    const { control, register, handleSubmit, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(cursoSchema), defaultValues: {
+    const { control, register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(cursoSchema), defaultValues: {
         nome: dados ? dados.nome : '',
         cod: dados ? dados.cod : '',
         valor: dados ? dados.valor : '',
@@ -24,15 +24,12 @@ function CadastroCurso({dados, title}) {
 
     // envia os dados do curso para a api
     const onSubmit = async (data) => {
-        const payload = Object.fromEntries(
-            Object.entries(data).filter(([campo]) => dirtyFields[campo])
-        )
+        const payload = data;
 
         if (dados) {
-            if (Object.keys(payload).length === 0) return;
             await api.patch(`/api/gerenciar-cursos/${dados.id}`, payload);
         } else {
-            await api.post('/api/gerenciar-cursos', data);
+            await api.post('/api/gerenciar-cursos', payload);
         }
 
         window.location.reload();
@@ -64,7 +61,7 @@ function CadastroCurso({dados, title}) {
                                 <Controller
                                 name="valor"
                                 control={control}
-                                defaultValue={0}
+                                
                                 render={({ field }) => (
                                     <IMaskInput
                                     {...field}
