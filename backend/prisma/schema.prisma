@@ -15,19 +15,50 @@ datasource db {
 }
 
 model Aluno {
-  id              Int @id   @default(autoincrement())
+  id              Int @id     @default(autoincrement())
   nome            String
-  cpf             String    @unique
+  cpf             String      @unique
   data_nascimento DateTime
-  email           String    @unique
+  email           String      @unique
   telefone        String?
-  data_matricula  DateTime  @default(now())
+  data_matricula  DateTime    @default(now())
+
+  matriculas      Matricula[] @relation("AlunoMatriculas")
 }
 
 model Curso {
-  id       Int     @id @default(autoincrement())
-  nome     String
-  cod      String  @unique
-  valor    Decimal @db.Decimal(10, 2)
-  cobranca String
+  id          Int         @id @default(autoincrement())
+  nome        String
+  cod         String      @unique
+  valor       Decimal     @db.Decimal(10, 2)
+  cobranca    String
+
+  turmas      Turma[]
+  matriculas  Matricula[] @relation("CursoMatriculas")
+}
+
+model Turma {
+  id         Int          @id @default(autoincrement())
+  cursoId    Int
+  nome       String       @unique
+  ano        DateTime     @default(now())
+  numero     Int
+  qtd_vagas  Int
+  qtd_alunos Int
+  status     String
+
+  curso      Curso        @relation(fields: [cursoId], references: [id])
+  matriculas Matricula[]  @relation("TurmaMatriculas")
+}
+
+model Matricula {
+  id      Int     @id @default(autoincrement())
+  alunoId Int
+  cursoId Int
+  turmaId Int
+  nome    String  @unique
+
+  aluno   Aluno   @relation("AlunoMatriculas",fields: [alunoId], references: [id])
+  curso   Curso   @relation("CursoMatriculas",fields: [cursoId], references: [id])
+  turma   Turma   @relation("TurmaMatriculas",fields: [turmaId], references: [id])
 }
