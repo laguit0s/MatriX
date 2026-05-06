@@ -3,5 +3,6 @@ const turmasController = require('../controllers/turmas.controller.js');
 const routerTurmas = Router();
 
 routerTurmas.get('/', turmasController.getTurmas);
+routerTurmas.post('/', turmasController.postTurma);
 
 module.exports = routerTurmas;

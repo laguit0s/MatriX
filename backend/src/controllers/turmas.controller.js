@@ -5,6 +5,12 @@ async function getTurmas(req, res) {
     res.status(200).json(dados);
 }
 
+async function postTurma(req, res) {
+    await turmasService.postTurma(req.body);
+    res.sendStatus(201);
+}
+
 module.exports = {
-    getTurmas
+    getTurmas,
+    postTurma,
 }

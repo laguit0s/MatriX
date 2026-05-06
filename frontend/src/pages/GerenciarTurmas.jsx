@@ -1,19 +1,56 @@
 import DataTable from "../components/DataTable";
+import CadastroTurma from "../components/CadastroTurma";
 import Header from "../components/Header";
+import api from "../services/api";
+import RenderProfile from "../services/renderProfileLink";
+import DeleteCell from "../services/deleteCell";
+import { useEffect, useState } from "react";
 
-// gerencia a exibicao e controle de dados das turmas
+// constroi a tela principal para gerenciar registros e tabela
 function GerenciarTurmas() {
-    // dados fixos como exemplo da construcao da tabela de turmas
-    const tableHeaders = ["HEADER 1", "HEADER 2", "HEADER 3"];
-    const tableRows = ["DATA 1", "DATA 2", "DATA 3"];
+    const [turmas, setTurmas] = useState(null);
 
-    return (
+    // faz leitura dos recursos do servidor e popula o estado da tabela
+    useEffect(() => {
+        async function carregarTurmas() {
+            const req = await api.get('/api/gerenciar-turmas');
+            setTurmas(req.data);
+        }
+        carregarTurmas();
+    }, []);
+
+    // define o titulo das colunas da tabela de exibicao de dados
+    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CURSO", "ANO", "ALUNOS", 'VAGAS', 'STATUS', ''];
+
+    return turmas ? (
         <div className="d-flex flex-column h-100">
-            <Header title="GERENCIAR TURMAS" />
-            <DataTable headerContent={tableHeaders} bodyContent={tableRows} />
+            <Header title="GERENCIAR TURMAS" Modal={() => <CadastroTurma title={'Cadastrar turma'}/>} modalID={'#cadastro-turma'}/>
+            <DataTable 
+            headerContent={tableHeaders} 
+            bodyContent={turmas} 
+            headerColumnClass={{ 1: "width-1", 6: "width-1" }} 
+            bodyColumnClass={{ 1: 'text-center p-0', 8: "text-center p-0 width-1" }} 
+            propertiesIgnore={['id', 'cursoId', 'numero']} 
+            standardStart={{
+                value: 'Profile', 
+                profileLink: true,
+                renderProfile: (item_id) => 
+                    RenderProfile('/gerenciar-turmas/', item_id, 'bi bi-mortarboard-fill')
+            }}
+            standardEnd={{
+                delete: true, 
+                deleteCell: (item_id) => 
+                    DeleteCell('/api/gerenciar-turmas/', item_id)
+            }}/>
         </div>
-    );
+    ) : (
+        <div className="d-flex justify-content-center align-items-center h-100">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">carregando...</span>
+            </div>
+        </div>
+    )
 }
 
-// expoe modulo estruturado para a raiz
+// expoe acesso a base global
 export default GerenciarTurmas;

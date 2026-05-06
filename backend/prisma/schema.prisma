@@ -38,14 +38,15 @@ model Curso {
 }
 
 model Turma {
-  id         Int          @id @default(autoincrement())
-  cursoId    Int
-  nome       String       @unique
-  ano        Int
-  numero     Int
-  qtd_vagas  Int
-  qtd_alunos Int
-  status     String
+  id               Int            @id @default(autoincrement())
+  cursoId          Int
+  nome             String         @unique
+  ano              Int
+  numero           Int
+  vagasMax         Int
+  qtdAlunos        Int
+  vagasDisponiveis Int?
+  status           String
 
   curso      Curso        @relation(fields: [cursoId], references: [id])
   matriculas Matricula[]  @relation("TurmaMatriculas")

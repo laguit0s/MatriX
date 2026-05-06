@@ -3,7 +3,7 @@ import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 const onlyDigits = (value) => (value ? String(value).replace(/\D/g, '') : '');
 
@@ -33,23 +33,34 @@ function CadastroAluno({dados, title}) {
     }});
 
     useEffect(() => {
-        async function carregarCursos() {
-            const dados = await api.get('/api/gerenciar-cursos');
-            setCursos(dados.data);
-        }
         async function carregarTurmas() {
             const dados = await api.get('/api/gerenciar-turmas');
             setTurmas(dados.data);
         }
-        if (!dados && cursos?.length && !watch('curso')) {
-            setValue('curso', String(cursos[0].id));
-        }
+
+        carregarTurmas();
+    }, []);
+
+    useEffect(() => {
         if (!dados && turmas?.length && !watch('turma')) {
             setValue('turma', String(turmas[0].id));
         }
+    }, [turmas])
+
+    useEffect(() => {
+        async function carregarCursos() {
+            const dados = await api.get('/api/gerenciar-cursos');
+            setCursos(dados.data);
+        }
+
         carregarCursos();
-        carregarTurmas();
-    }, [cursos, turmas, dados, watch, setValue]);
+    }, [])
+
+    useEffect(() => {
+        if (!dados && cursos?.length && !watch('curso')) {
+            setValue('curso', String(cursos[0].id));
+        }
+    }, [cursos])
 
     // envia os dados do aluno para a api
     const onSubmit = async (data) => {
@@ -127,7 +138,7 @@ function CadastroAluno({dados, title}) {
                                         <select className='form-select' {...register('curso')}>
                                             {
                                                 cursos && cursos.map((curso, i) => (
-                                                    <option key={i} value={String(curso.id)}>{curso.nome}</option>
+                                                    <option key={i} value={curso.id}>{curso.nome}</option>
                                                 ))
                                             }
                                         </select>
@@ -136,7 +147,7 @@ function CadastroAluno({dados, title}) {
                                         <label>Turma:</label>
                                         <select className='form-select' {...register('turma')}>
                                             {
-                                                turmas && turmas.filter(turma => turma.cursoId == watch('curso') && turma.status === 'aberta').map((turma, i) => (
+                                                turmas && turmas.filter(turma => turma.cursoId == Number(watch('curso')) && turma.status == 'aberta').map((turma, i) => (
                                                     <option key={i} value={turma.id}>{turma.nome}</option>
                                                 ))
                                             }

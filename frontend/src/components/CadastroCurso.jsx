@@ -4,8 +4,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 
-const onlyDigits = (value) => (value ? String(value).replace(/\D/g, '') : '');
-
 // modal de cadastro de novo aluno
 function CadastroCurso({dados, title}) {
     const cursoSchema = z.object({

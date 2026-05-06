@@ -15,24 +15,16 @@ async function getAlunos() {
 }
 
 async function createMatricula(alunoId, cursoId, turmaId) {
-  let nomeTurma = await prisma.turma.findUnique({
+  let turma = await prisma.turma.findUnique({
     where: { id: Number(turmaId) },
-    select: { nome: true }
-  }); nomeTurma = nomeTurma.nome;
-
-  let numeroMatriculas = await prisma.matricula.count({
-    where: {
-      IdTurma: Number(turmaId)
-    }
-  }); 
+    select: { nome: true, qtdAlunos: true, vagasMax: true }
+  });
   
-  if (numeroMatriculas <= 0) {
-    numeroMatriculas = 1;
-  } else {
-    ++numeroMatriculas;
+  if (turma.qtdAlunos >= turma.vagasMax) {
+    return;
   }
 
-  const nomeMatricula = `${nomeTurma}.${String(numeroMatriculas).padStart(3, "0")}`;
+  const nomeMatricula = `${turma.nome}.${String(turma.qtdAlunos + 1).padStart(4, "0")}`;
 
   await prisma.matricula.create({
     data: {
@@ -41,6 +33,11 @@ async function createMatricula(alunoId, cursoId, turmaId) {
       turmaId: Number(turmaId),
       nome: nomeMatricula
     }
+  })
+
+  await prisma.turma.update({
+    where: { id: Number(turmaId) },
+    data: { qtdAlunos:  turma.qtdAlunos + 1, vagasDisponiveis: turma.vagasMax - (turma.qtdAlunos + 1)}
   })
 }
 
@@ -60,7 +57,7 @@ async function postAluno(body) {
   });
 
   if (body.curso && body.turma) {
-    createMatricula(aluno.id, body.curso, body.turma);
+    await createMatricula(aluno.id, body.curso, body.turma);
   }
 }
 
