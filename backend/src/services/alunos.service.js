@@ -4,7 +4,7 @@ const format = require('../utils/format.data');
 
 // busca todos os alunos e formata os dados principais
 async function getAlunos() {
-  let rows = await prisma.Aluno.findMany();
+  let rows = await prisma.Aluno.findMany({ orderBy: { nome: 'asc' } });
   rows.forEach(row => {
     row.telefone = format.phone(row.telefone);
     row.cpf = format.CPF(row.cpf);
@@ -78,6 +78,24 @@ async function getAlunoProfile(id) {
 }
 
 async function deleteAluno (id) {
+  const matriculas = await prisma.matricula.findMany({
+    where: { alunoId: Number(id) }
+  });
+  for (const matricula of matriculas) {
+    const turma = await prisma.turma.findUnique({
+      where: { id: Number(matricula.turmaId) }
+    })
+    await prisma.turma.update({
+      where: { id: turma.id },
+      data: {
+        qtdAlunos: { decrement: 1 },
+        vagasDisponiveis: { increment: 1}
+      }
+    })
+  }
+  await prisma.matricula.deleteMany({
+    where: { alunoId: Number(id) }
+  })
   await prisma.aluno.delete({
     where: { id: Number(id) }
   })

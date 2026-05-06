@@ -3,7 +3,6 @@ import React from 'react';
 // renderiza a tabela dinamica de dados
 function DataTable({
     headerContent = [],
-    headerByProp = {},
     bodyContent = [],
     headerColumnClass = {},
     bodyColumnClass = {},
@@ -42,16 +41,6 @@ function DataTable({
         }
     }
 
-    // constroi header final: prioriza headerContent (tableHeaders). Se não houver,
-    // mapeia properties via headerByProp ou usa o nome da propriedade.
-    let finalHeader = [];
-    if (headerContent && headerContent.length) {
-        finalHeader = headerContent;
-    } else {
-        const middle = properties.map((p) => headerByProp[p] ?? String(p).toUpperCase());
-        finalHeader = [standardStart.header ?? '', ...middle, standardEnd.header ?? ''];
-    }
-
     // define classes css do cabecalho com base no indice (1-based mapping)
     const getHeaderClass = colIndex => {
         return `sticky-top text-center app-table__head-cell ${headerColumnClass[colIndex + 1] || ''}`;
@@ -71,7 +60,7 @@ function DataTable({
             <table className="table table-hover align-middle text-nowrap m-0 app-table">
                 <thead className="app-table__head border-bottom">
                     <tr>
-                        {finalHeader.map((headerLabel, colIndex) => (
+                        {headerContent.map((headerLabel, colIndex) => (
                             <th key={colIndex} className={`${getHeaderClass(colIndex)} border-0`}>
                                 {headerLabel}
                             </th>

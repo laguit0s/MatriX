@@ -2,7 +2,7 @@ const prisma = require('../config/db');
 const format = require('../utils/format.data');
 
 async function getCursos() {
-    const cursos = await prisma.curso.findMany();
+    const cursos = await prisma.curso.findMany({ orderBy: { nome: 'asc' } });
     cursos.forEach(curso => {
         curso.valor = format.valor(curso.valor);
     })

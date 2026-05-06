@@ -18,8 +18,8 @@ function CadastroAluno({dados, title}) {
         data_nascimento: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 8 dígitos'),
         telefone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
         email: z.string().email('E-mail inválido'),
-        curso: z.string(),
-        turma: z.string()
+        curso: z.coerce.number('Curso inválido'),
+        turma: z.coerce.number('Sem turmas válidas para o curso')
     })
 
     const { control, watch, register, handleSubmit, setValue, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(alunoSchema), defaultValues: {
@@ -52,7 +52,6 @@ function CadastroAluno({dados, title}) {
             const dados = await api.get('/api/gerenciar-cursos');
             setCursos(dados.data);
         }
-
         carregarCursos();
     }, [])
 
@@ -61,6 +60,14 @@ function CadastroAluno({dados, title}) {
             setValue('curso', String(cursos[0].id));
         }
     }, [cursos])
+
+    useEffect(() => {
+        if (cursos && turmas) {
+            let turmasValidas = turmas.filter(turma => turma.cursoId == watch('curso'));
+            turmasValidas.length ? setValue('turma', turmasValidas[0].id) : setValue('turma', null);
+            console.log('ID curso: '+watch('curso')+' | ID turma: '+watch('turma'));
+        }
+    }, [watch('curso')])
 
     // envia os dados do aluno para a api
     const onSubmit = async (data) => {
@@ -145,13 +152,22 @@ function CadastroAluno({dados, title}) {
                                     </div>
                                     <div className="col">
                                         <label>Turma:</label>
-                                        <select className='form-select' {...register('turma')}>
+                                        <select className='form-select' {...register('turma')} disabled={!watch('turma') ? true : false}>
                                             {
-                                                turmas && turmas.filter(turma => turma.cursoId == Number(watch('curso')) && turma.status == 'aberta').map((turma, i) => (
+                                                turmas && 
+                                                turmas.filter(turma => turma.cursoId == Number(watch('curso')) && turma.status == 'aberta').length
+                                                ?
+                                                turmas.filter(turma => turma.cursoId == Number(watch('curso')) && turma.status == 'aberta').map((turma, i) => (
                                                     <option key={i} value={turma.id}>{turma.nome}</option>
                                                 ))
+                                                :
+                                                (
+                                                    <option disabled value="">SEM TURMAS ABERTAS PARA O CURSO</option>
+                                                )
+
                                             }
                                         </select>
+                                        {errors.turma && (<p className='text-danger'>{errors.turma.message}</p>)}
                                     </div>
                                 </>
                             )}

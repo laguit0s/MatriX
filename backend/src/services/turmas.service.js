@@ -1,7 +1,7 @@
 const prisma = require('../config/db');
 
 async function getTurmas() {
-    const turmas = await prisma.turma.findMany();
+    const turmas = await prisma.turma.findMany({ orderBy: { nome: 'asc' } });
     return turmas;
 }
 
