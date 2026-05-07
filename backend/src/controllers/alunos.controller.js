@@ -4,6 +4,9 @@ const alunosService = require('../services/alunos.service');
 // retorna lista de alunos
 async function getAlunos(req, res) {
   const alunos = await alunosService.getAlunos();
+  alunos.forEach(aluno => {
+    aluno.nome = aluno.nome.toUpperCase();
+  })
   res.status(200).json(alunos);
 }
 

@@ -29,11 +29,11 @@ function GerenciarTurmas() {
             headerContent={tableHeaders} 
             bodyContent={turmas} 
             headerColumnClass={{ 1: "width-1", 6: "width-1" }} 
-            bodyColumnClass={{ 1: 'text-center p-0', 8: "text-center p-0 width-1" }} 
-            propertiesIgnore={['id', 'vagasMax', 'numero']} 
+            bodyColumnClass={{ 1: 'text-center p-0', 3: "text-start", 8: "text-center p-0 width-1" }} 
+            propertiesIgnore={['id', 'vagasMax', 'numero', 'cursoId']} 
             colOrder={{
                 2: "nome",
-                3: "cursoId",
+                3: "nomeCurso",
                 4: "ano",
                 5: "qtdAlunos",
                 6: "vagasDisponiveis",

@@ -1,8 +1,21 @@
 const prisma = require('../config/db');
 
 async function getTurmas() {
-    const turmas = await prisma.turma.findMany({ orderBy: { nome: 'asc' } });
-    return turmas;
+    const turmas = await prisma.turma.findMany({
+        orderBy: { nome: 'asc' },
+        include: {
+            curso: {
+                select: {
+                    nome: true,
+                },
+            },
+        },
+    });
+
+    return turmas.map(({ curso, ...turma }) => ({
+        ...turma,
+        nomeCurso: curso?.nome ?? null,
+    }));
 }
 
 async function postTurma(body) {
