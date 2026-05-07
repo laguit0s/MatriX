@@ -65,5 +65,5 @@ module.exports = {
     createCourse,
     deleteCourse,
     getCourse,
-    updateCourse
+    updateCourse,
 };

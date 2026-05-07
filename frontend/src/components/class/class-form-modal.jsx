@@ -1,4 +1,4 @@
-import api from '../services/api';
+import api from '../../services/api';
 import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,8 +15,9 @@ function ClassFormModal({ data, title }) {
     });
 
     const { register, watch, setValue, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(classSchema), defaultValues: {
-        courseId: data ? data.courseId : null,
-        status: data ? data.status : 'planejada',
+        courseId: data && data.courseId,
+        maxSeats: data && data.maxSeats,
+        status: data ? data.status : 'PLANEJADA',
     }});
 
     useEffect(() => {
@@ -61,7 +62,7 @@ function ClassFormModal({ data, title }) {
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col form-group">
                                 <label>Curso:</label>
-                                <select className='form-select' {...register('courseId')}>
+                                <select className='form-select' value={watch('courseId') ?? ''} {...register('courseId')}>
                                     {
                                         courses && courses.map((course, i) => (
                                             <option key={i} value={course.id}>{course.name}</option>
@@ -70,16 +71,16 @@ function ClassFormModal({ data, title }) {
                                 </select>
                             </div>
                             <div className="col form-group">
-                                <label>Quantidade de vagas:</label>
+                                <label>Quantidade de alunos:</label>
                                 <input className='form-control' type="number" {...register('maxSeats')}/>
                             </div>
                             <div className="col-12 form-group">
                                 <label>Status:</label>
                                 <select className='form-select' {...register('status')}>
-                                    <option value="planejada">Planejada</option>
-                                    <option value="aberta">Aberta</option>
-                                    <option value="andamento">Em andamento</option>
-                                    <option value="finalizada">Finalizada</option>
+                                    <option value="PLANEJADA">Planejada</option>
+                                    <option value="ABERTA">Aberta</option>
+                                    <option value="ANDAMENTO">Em andamento</option>
+                                    <option value="FINALIZADA">Finalizada</option>
                                 </select>
                             </div>
                             <div className="col-12 d-flex gap-3">

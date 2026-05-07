@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import api from "./api";
+import api from "../../services/api";
 
 function deleteActionCell(route, itemId, icon) {
     async function sendRequest() {

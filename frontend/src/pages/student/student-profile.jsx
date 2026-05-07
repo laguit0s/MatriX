@@ -1,10 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import api from '../services/api';
-import StudentFormModal from '../components/student-form-modal';
+import api from '../../services/api';
+import StudentFormModal from '../../components/student/student-form-modal';
 
 function StudentProfile() {
-    const ppColor = '#006eff'
+    const ppColor = '#006eff';
+    const badgeColors = {pendente: "warning", ativa: "success", trancada: "secondary", cancelada: "danger", concluida: "info"};
 
     const { id } = useParams();
     let [data, setData] = useState(null);
@@ -43,8 +44,8 @@ function StudentProfile() {
                             </div>
                             <div>
                                 <h3 className="mb-1">{data.fullName}</h3>
-                                <p className="text-muted m-0">Matrícula em: {data.enrollmentDate || 'não informada'}</p>
-                                <p className="text-muted m-0">Situação: <span className="badge text-bg-success">Matriculado</span></p>
+                                <p className="text-muted m-0">Matrícula: <span className={"badge text-bg-"+badgeColors[`${data.enrollmentStatus.toLowerCase()}`]}>{data.enrollmentStatus}</span></p>
+                                <p className="text-muted m-0">Cadastrado em: {data.enrollmentDate}</p>
                             </div>
                         </div>
                     </div>

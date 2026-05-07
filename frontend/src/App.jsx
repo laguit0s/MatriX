@@ -1,10 +1,11 @@
-import SidebarDesktop from "./components/sidebar-desktop";
+import SidebarDesktop from "./components/.common/sidebar-desktop";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ManageStudents from "./pages/manage-students";
-import ManageCourses from "./pages/manage-courses";
-import ManageClasses from "./pages/manage-classes";
-import StudentProfile from "./pages/student-profile";
-import CourseProfile from "./pages/course-profile";
+import ManageStudents from "./pages/student/manage-students";
+import ManageCourses from "./pages/course/manage-courses";
+import ManageClasses from "./pages/class/manage-classes";
+import StudentProfile from "./pages/student/student-profile";
+import CourseProfile from "./pages/course/course-profile";
+import ClassProfile from "./pages/class/class-profile";
 
 import "./styles/global.css";
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/manage-courses" element={<ManageCourses />} />
             <Route path="/manage-courses/:id" element={<CourseProfile />} />
             <Route path="/manage-classes" element={<ManageClasses />} />
+            <Route path="/manage-classes/:id" element={<ClassProfile />} />
           </Routes>
         </div>
       </BrowserRouter>

@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import api from '../services/api';
-import CourseFormModal from '../components/course-form-modal';
+import api from '../../services/api';
+import CourseFormModal from '../../components/course/course-form-modal';
 
 function CourseProfile() {
     const ppColor = '#006eff'

@@ -1,4 +1,4 @@
-import api from '../services/api';
+import api from '../../services/api';
 import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

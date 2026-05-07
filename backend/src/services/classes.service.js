@@ -18,26 +18,53 @@ async function listClasses() {
     }));
 }
 
-async function createClass(body) {
+async function listClass(id) {
+    const _class_ = await prisma.classGroup.findUnique({
+        where: { id: Number(id) },
+        include: {
+            course: {
+                select: {
+                    name: true,
+                },
+            },
+        },
+    });
+
+    formattedClass = {
+        ..._class_,
+        courseName: _class_.course.name
+    }
+
+    return formattedClass;
+}
+
+async function createClassName(courseId) {
     const currentYear = new Date().getFullYear();
+
     let courseCode = await prisma.course.findUnique({
-        where: { id: Number(body.courseId) },
+        where: { id: Number(courseId) },
         select: { code: true }
     });
     courseCode = courseCode.code;
+
     let classNumber = await prisma.classGroup.count({
-        where: { courseId: Number(body.courseId), year: currentYear }
+        where: { courseId: Number(courseId), year: currentYear }
     });
     classNumber++;
 
     const className = `${currentYear}.${String(classNumber).padStart(2, '0')}.${courseCode.toUpperCase()}`;
 
+    return {name: className, number: classNumber, year: currentYear};
+}
+
+async function createClass(body) {
+    const newClassData = await createClassName(body.courseId);
     await prisma.classGroup.create({
         data: {
             courseId: Number(body.courseId),
-            name: className,
-            number: classNumber,
-            year: currentYear,
+            name: newClassData.name,
+            number: newClassData.number,
+            year: newClassData.year,
             studentCount: 0,
             maxSeats: body.maxSeats,
             availableSeats: body.maxSeats,
@@ -50,11 +77,11 @@ async function deleteClass(id) {
     const classId = Number(id);
 
     await prisma.$transaction(async (tx) => {
-        await tx.enrollment.deleteMany({
+        const enrollments = await tx.enrollment.findMany({
             where: { classGroupId: classId }
         });
 
-        const enrollments = await tx.enrollment.findMany({
+        await tx.enrollment.deleteMany({
             where: { classGroupId: classId }
         });
 
@@ -80,8 +107,52 @@ async function deleteClass(id) {
     });
 }
 
+async function updateClass(body, id) {
+    const data = {};
+
+    if (body.courseId !== undefined) {
+        data.courseId = body.courseId;
+    }
+    if (body.maxSeats !== undefined) {
+        const classGroup = await prisma.classGroup.findUnique( { where: { id: Number(id) } } );
+        if (body.maxSeats < classGroup.studentCount) {
+            return;
+        }
+        data.maxSeats = body.maxSeats;
+    }
+    if (body.status !== undefined) {
+        data.status = body.status;
+    }
+
+    await prisma.$transaction(async (tx) => {
+        const classGroup = await tx.classGroup.findUnique({where:{id: Number(id)}});
+
+        await tx.classGroup.update({
+            where: { id: Number(id) },
+            data: {
+                ...data,
+                availableSeats: data.maxSeats - classGroup.studentCount,
+            }
+        })
+
+        if (data.courseId) {
+            const newClassData = await createClassName(body.courseId);
+            await tx.classGroup.update({
+                where: {id: Number(id)},
+                data: {
+                    name: newClassData.name,
+                    number: newClassData.number,
+                    year: newClassData.year,
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
     listClasses,
     createClass,
     deleteClass,
+    listClass,
+    updateClass,
 };

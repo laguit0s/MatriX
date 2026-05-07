@@ -1,9 +1,9 @@
-import CourseFormModal from "../components/course-form-modal";
-import DataTable from "../components/data-table";
-import AppHeader from "../components/app-header";
-import api from "../services/api";
-import renderProfileLink from "../services/render-profile-link";
-import deleteActionCell from "../services/delete-cell";
+import CourseFormModal from "../../components/course/course-form-modal";
+import DataTable from "../../components/.common/data-table";
+import AppHeader from "../../components/.common/app-header";
+import api from "../../services/api";
+import renderProfileLink from "../../components/.common/render-profile-link";
+import deleteActionCell from "../../components/.common/delete-cell";
 import { useEffect, useState } from "react";
 
 function ManageCourses() {
