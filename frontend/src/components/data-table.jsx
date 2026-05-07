@@ -4,24 +4,24 @@ import React from 'react';
 function DataTable({
     headerContent = [],
     bodyContent = [],
-    headerColumnClass = {},
-    bodyColumnClass = {},
-    propertiesIgnore = [],
-    standardStart = {},
-    standardEnd = {},
-    colOrder = {},
+    headerColumnClasses = {},
+    bodyColumnClasses = {},
+    ignoredProperties = [],
+    startColumn = {},
+    endColumn = {},
+    columnOrder = {},
 }) {
 
     // filtra propriedades que devem ser ignoradas
-    let properties = bodyContent[0]
-        ? Object.keys(bodyContent[0]).filter(key => !propertiesIgnore.includes(key))
+    const properties = bodyContent[0]
+        ? Object.keys(bodyContent[0]).filter(key => !ignoredProperties.includes(key))
         : [];
     
     // aplica reordenação baseada em colOrder
-    if (Object.keys(colOrder).length !== 0) {
-        const colOrderKeys = Object.keys(colOrder);
-        for (let i = 0; i < colOrderKeys.length; i++) {
-            const key = colOrderKeys[i];
+    if (Object.keys(columnOrder).length !== 0) {
+        const columnOrderKeys = Object.keys(columnOrder);
+        for (let i = 0; i < columnOrderKeys.length; i++) {
+            const key = columnOrderKeys[i];
             const targetOneBased = Number(key);
             if (Number.isNaN(targetOneBased)) continue;
 
@@ -29,7 +29,7 @@ function DataTable({
             // As propriedades começam na posição 2, portanto mapeamos
             // targetOneBased -> índice em `properties` subtraindo 2.
             const propTargetIndex = targetOneBased - 2;
-            const propName = colOrder[key];
+            const propName = columnOrder[key];
             const currentIndex = properties.indexOf(propName);
 
             if (currentIndex === -1) continue;
@@ -43,12 +43,12 @@ function DataTable({
 
     // define classes css do cabecalho com base no indice (1-based mapping)
     const getHeaderClass = colIndex => {
-        return `sticky-top text-center app-table__head-cell ${headerColumnClass[colIndex + 1] || ''}`;
+        return `sticky-top text-center app-table__head-cell ${headerColumnClasses[colIndex + 1] || ''}`;
     };
 
     // define classes css do corpo, aplica alinhamento central caso nao definido
     const getBodyClass = colIndex => {
-        const columnClass = bodyColumnClass[colIndex + 1] || "";
+        const columnClass = bodyColumnClasses[colIndex + 1] || "";
         return `${columnClass.includes("text-start") || columnClass.includes("text-end") ? columnClass : `${columnClass} text-center`}`;
     };
 
@@ -70,12 +70,12 @@ function DataTable({
                 <tbody className="app-table__body font-monospace">
                     {bodyContent.map((row, rowIndex) => (
                         <tr key={rowIndex}>
-                            <td className={getBodyClass(0)}>{standardStart.profileLink ? standardStart.renderProfile(row['id']) : standardStart.value}</td>
+                            <td className={getBodyClass(0)}>{startColumn.profileLink ? startColumn.renderProfile(row['id']) : startColumn.value}</td>
                             {properties.map((prop, colIndex) => {
                                 const cellContent = row[prop];
                                 return <td key={prop} className={(getBodyClass(colIndex + 1))}>{cellContent}</td>
                             })}
-                            <td className={getBodyClass(properties.length + 1)}>{standardEnd.delete ? standardEnd.deleteCell(row['id']) : standardEnd.value}</td>
+                            <td className={getBodyClass(properties.length + 1)}>{endColumn.delete ? endColumn.deleteCell(row['id']) : endColumn.value}</td>
                         </tr>
                     ))}
                 </tbody>

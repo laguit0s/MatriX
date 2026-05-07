@@ -4,41 +4,39 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 
-// modal de cadastro de novo aluno
-function CadastroCurso({dados, title}) {
-    const cursoSchema = z.object({
-        nome: z.string().min(1, "Campo obrigatório.").max(300, "O nome não deve exceder 300 caracteres."),
-        cod: z.string().min(1, "Campo obrigatório").max(30, "O código não deve exceder 30 caracteres."),
-        valor: z.preprocess((value) => Number(value), z.number()),
-        cobranca: z.coerce.string()
-    })
+function CourseFormModal({ data, title }) {
+    const courseSchema = z.object({
+        name: z.string().min(1, "Campo obrigatório.").max(300, "O nome não deve exceder 300 caracteres."),
+        code: z.string().min(1, "Campo obrigatório").max(30, "O código não deve exceder 30 caracteres."),
+        price: z.preprocess((value) => Number(value), z.number()),
+        billingCycle: z.coerce.string()
+    });
 
-    const { control, register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(cursoSchema), defaultValues: {
-        nome: dados ? dados.nome : '',
-        cod: dados ? dados.cod : '',
-        valor: dados ? dados.valor : '',
-        cobranca: dados ? dados.cobranca : 'Mensal',
+    const { control, register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(courseSchema), defaultValues: {
+        name: data ? data.name : '',
+        code: data ? data.code : '',
+        price: data ? data.price : '',
+        billingCycle: data ? data.billingCycle : 'Mensal',
     }});
 
-    // envia os dados do curso para a api
-    const onSubmit = async (data) => {
-        const payload = data;
+    const onSubmit = async (formData) => {
+        const payload = formData;
 
-        if (dados) {
-            await api.patch(`/api/gerenciar-cursos/${dados.id}`, payload);
+        if (data) {
+            await api.patch(`/api/manage-courses/${data.id}`, payload);
         } else {
-            await api.post('/api/gerenciar-cursos', payload);
+            await api.post('/api/manage-courses', payload);
         }
 
         window.location.reload();
-    }
+    };
 
     const onError = (errors) => {
         console.log("Erro no envio do formulário:", errors);
     };
 
     return (
-        <div className="modal fade p-0" tabIndex="-1" id="cadastro-curso" data-bs-backdrop="static" data-bs-keyboard="false" style={{zIndex: "5000"}}>
+        <div className="modal fade p-0" tabIndex="-1" id="course-form-modal" data-bs-backdrop="static" data-bs-keyboard="false" style={{zIndex: "5000"}}>
             <div className="modal-dialog modal-dialog-centered w-100 modal-lg modal-fullscreen-md-down">
                 <div className="modal-content">
                     <div className="modal-header justify-content-center">
@@ -48,16 +46,16 @@ function CadastroCurso({dados, title}) {
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col">
                                 <label>Nome:</label>
-                                <input className='form-control' type="text" {...register('nome')}/>
+                                <input className='form-control' type="text" {...register('name')}/>
                             </div>
                             <div className="col">
                                 <label htmlFor="codigo-curso">Código:</label>
-                                <input className='form-control' type="text" {...register('cod')}/>
+                                <input className='form-control' type="text" {...register('code')}/>
                             </div>
                             <div className="col">
                                 <label>Valor:</label>
                                 <Controller
-                                name="valor"
+                                name="price"
                                 control={control}
                                 
                                 render={({ field }) => (
@@ -78,7 +76,7 @@ function CadastroCurso({dados, title}) {
                             </div>
                             <div className="col">
                                 <label>Cobrança:</label>
-                                <select className='form-select' {...register('cobranca')}>
+                                <select className='form-select' {...register('billingCycle')}>
                                     <option value="Diária">Diária</option>
                                     <option value="Semanal">Semanal</option>
                                     <option value="Mensal">Mensal</option>
@@ -94,7 +92,7 @@ function CadastroCurso({dados, title}) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default CadastroCurso;
+export default CourseFormModal;

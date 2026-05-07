@@ -5,55 +5,53 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 
-// modal de cadastro de novo aluno
-function CadastroTurma({dados, title}) {
-    let [cursos, setCursos] = useState(null);
+function ClassFormModal({ data, title }) {
+    let [courses, setCourses] = useState(null);
 
-    const turmaSchema = z.object({
-        curso: z.coerce.number(),
-        vagasMax: z.coerce.number().min(1, 'A turma deve ter pelo menos um aluno.').max(1000, 'Limite de alunos excedido.'),
+    const classSchema = z.object({
+        courseId: z.coerce.number(),
+        maxSeats: z.coerce.number().min(1, 'A turma deve ter pelo menos um aluno.').max(1000, 'Limite de alunos excedido.'),
         status: z.string(),
-    })
+    });
 
-    const { register, watch, setValue, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(turmaSchema), defaultValues: {
-        curso: dados ? dados.idCurso : null,
-        status: dados ? dados.status : 'planejada',
+    const { register, watch, setValue, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(classSchema), defaultValues: {
+        courseId: data ? data.courseId : null,
+        status: data ? data.status : 'planejada',
     }});
 
     useEffect(() => {
-        async function carregarCursos() {
-            const dados = await api.get('/api/gerenciar-cursos');
-            setCursos(dados.data);
+        async function loadCourses() {
+            const response = await api.get('/api/manage-courses');
+            response.data.length && setCourses(response.data);
         }
-        carregarCursos();
+        loadCourses();
     }, []);
 
     useEffect(() => {
-        if (!dados && cursos && !watch('curso')) {
-            setValue('curso', cursos[0].id);
+        if (!data && courses && !watch('courseId')) {
+            setValue('courseId', courses[0].id);
         }
-    }, [cursos])
+    }, [courses]);
 
-    // envia os dados da turma para a api
-    const onSubmit = async (data) => {
-        const payload = data;
+    const onSubmit = async (formData) => {
+        const payload = formData;
 
-        if (dados) {
-            await api.patch(`/api/gerenciar-turmas/${dados.id}`, payload);
+        if (data) {
+            await api.patch(`/api/manage-classes/${data.id}`, payload);
         } else {
             console.log(payload);
-            await api.post('/api/gerenciar-turmas', payload);
+            await api.post('/api/manage-classes', payload);
         }
 
         window.location.reload();
-    }
+    };
 
     const onError = (errors) => {
         console.log("Erro no envio do formulário:", errors);
     };
 
     return (
-        <div className="modal fade p-0" tabIndex="-1" id="cadastro-turma" data-bs-backdrop="static" data-bs-keyboard="false" style={{zIndex: "5000"}}>
+        <div className="modal fade p-0" tabIndex="-1" id="class-form-modal" data-bs-backdrop="static" data-bs-keyboard="false" style={{zIndex: "5000"}}>
             <div className="modal-dialog modal-dialog-centered w-100 modal-lg modal-fullscreen-md-down">
                 <div className="modal-content">
                     <div className="modal-header justify-content-center">
@@ -63,17 +61,17 @@ function CadastroTurma({dados, title}) {
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col form-group">
                                 <label>Curso:</label>
-                                <select className='form-select' {...register('curso')}>
+                                <select className='form-select' {...register('courseId')}>
                                     {
-                                        cursos && cursos.map((curso, i) => (
-                                            <option key={i} value={curso.id}>{curso.nome}</option>
+                                        courses && courses.map((course, i) => (
+                                            <option key={i} value={course.id}>{course.name}</option>
                                         ))
                                     }
                                 </select>
                             </div>
                             <div className="col form-group">
                                 <label>Quantidade de vagas:</label>
-                                <input className='form-control' type="number" {...register('vagasMax')}/>
+                                <input className='form-control' type="number" {...register('maxSeats')}/>
                             </div>
                             <div className="col-12 form-group">
                                 <label>Status:</label>
@@ -93,7 +91,7 @@ function CadastroTurma({dados, title}) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default CadastroTurma;
+export default ClassFormModal;

@@ -1,21 +1,20 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-import CadastroAluno from '../components/CadastroAluno';
+import StudentFormModal from '../components/student-form-modal';
 
-// estrutura a tela visual do registro do perfil 
-function PerfilAluno() {
+function StudentProfile() {
     const ppColor = '#006eff'
 
     const { id } = useParams();
-    let [dados, setDados] = useState(null);
+    let [data, setData] = useState(null);
 
     // requisita no servidor a exibicao com formatacao visual do aluno
     useEffect(() => {
         async function carregarDados() {
             try {
-                const req = await api.get(`/api/gerenciar-alunos/${id}`);
-                setDados(req.data);
+                const req = await api.get(`/api/manage-students/${id}`);
+                setData(req.data);
             } catch(e) {
                 console.error(e);
             }
@@ -24,12 +23,12 @@ function PerfilAluno() {
     }, [id])
 
     // aguarda termino da busca antes exibir blocos formatados em display
-    return dados ? (
+    return data ? (
         
         <div className="d-flex flex-column h-100 w-100">
-            <CadastroAluno dados={dados} title={'Editar dados'}/>
+            <StudentFormModal data={data} title={'Editar dados'} />
             <div className="d-flex flex-column align-items-start p-4 gap-3">
-                <Link to="/gerenciar-alunos" className='app-header__eyebrow'>
+                <Link to="/manage-students" className='app-header__eyebrow'>
                     <i className="bi bi-house-fill"></i>
                     <span>Voltar</span>
                 </Link>
@@ -40,11 +39,11 @@ function PerfilAluno() {
                     <div className="d-flex align-items-start justify-content-between mb-4 gap-4">
                         <div className="d-flex align-items-center gap-4">
                             <div className="fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem', backgroundColor: `${ppColor}`}}>
-                                <span>{dados.nome[0]}</span>
+                                <span>{data.fullName[0]}</span>
                             </div>
                             <div>
-                                <h3 className="mb-1">{dados.nome}</h3>
-                                <p className="text-muted m-0">Matrícula em: {dados.data_matricula || 'não informada'}</p>
+                                <h3 className="mb-1">{data.fullName}</h3>
+                                <p className="text-muted m-0">Matrícula em: {data.enrollmentDate || 'não informada'}</p>
                                 <p className="text-muted m-0">Situação: <span className="badge text-bg-success">Matriculado</span></p>
                             </div>
                         </div>
@@ -53,24 +52,24 @@ function PerfilAluno() {
                     <hr className="mb-4" />
 
                     <div className="row g-3">
-                        <button className="btn btn-outline-primary col" type="button" data-bs-toggle="modal" data-bs-target="#cadastro-aluno">
+                        <button className="btn btn-outline-primary col" type="button" data-bs-toggle="modal" data-bs-target="#student-form-modal">
                             <i className="bi bi-pencil-fill me-2"></i>Editar
                         </button>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">cpf</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{dados.cpf}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{data.cpf}</p>
                         </div>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">data de nascimento</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{dados.data_nascimento}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{data.birthDate}</p>
                         </div>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">e-mail</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{dados.email}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{data.email}</p>
                         </div>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">telefone</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{dados.telefone}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{data.phone}</p>
                         </div>
                     </div>
                 </div>
@@ -82,8 +81,8 @@ function PerfilAluno() {
                 <span className="visually-hidden">carregando...</span>
             </div>
         </div>
-    )
+    );
 }
 
 // exporta interface montada
-export default PerfilAluno;
+export default StudentProfile;

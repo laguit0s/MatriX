@@ -1,10 +1,10 @@
-import SidebarDesktop from "./components/SidebarDesktop";
+import SidebarDesktop from "./components/sidebar-desktop";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import GerenciarAlunos from "./pages/GerenciarAlunos";
-import GerenciarCursos from "./pages/GerenciarCursos";
-import GerenciarTurmas from "./pages/GerenciarTurmas";
-import PerfilAluno from "./pages/PerfilAluno";
-import PerfilCurso from "./pages/PerfilCurso";
+import ManageStudents from "./pages/manage-students";
+import ManageCourses from "./pages/manage-courses";
+import ManageClasses from "./pages/manage-classes";
+import StudentProfile from "./pages/student-profile";
+import CourseProfile from "./pages/course-profile";
 
 import "./styles/global.css";
 
@@ -18,11 +18,11 @@ function App() {
         <div className="routes-container content-wrapper">
           <Routes>
             {/* rotas base dos modulos administrativos */}
-            <Route path="/gerenciar-alunos" element={<GerenciarAlunos />} />
-            <Route path="/gerenciar-alunos/:id" element={<PerfilAluno />} />
-            <Route path="/gerenciar-cursos" element={<GerenciarCursos />} />
-            <Route path="/gerenciar-cursos/:id" element={<PerfilCurso />} />
-            <Route path="/gerenciar-turmas" element={<GerenciarTurmas />} />
+            <Route path="/manage-students" element={<ManageStudents />} />
+            <Route path="/manage-students/:id" element={<StudentProfile />} />
+            <Route path="/manage-courses" element={<ManageCourses />} />
+            <Route path="/manage-courses/:id" element={<CourseProfile />} />
+            <Route path="/manage-classes" element={<ManageClasses />} />
           </Routes>
         </div>
       </BrowserRouter>

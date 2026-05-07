@@ -20,7 +20,7 @@ function SidebarDesktop() {
     // controle numericos e chaves auxiliares base 
     const MAX_WIDTH = 250
     const MIN_WIDTH = 60
-    const COLLAPSE_IDS = ["collapse-alunos", "collapse-cursos"]
+const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
     const mobileWidth = "min(85vw, 320px)"
 
     // variaveis de controle de comportamento de css
@@ -246,9 +246,9 @@ function SidebarDesktop() {
                     <li className={expandedNavItemClass}>
                         <a
                             href="#"
-                            className={getGroupClass(["/gerenciar-alunos", "/perfil-aluno"])}
+                            className={getGroupClass(["/manage-students", "/student-profile"])}
                             data-bs-toggle="collapse"
-                            data-bs-target="#collapse-alunos"
+                            data-bs-target="#collapse-students"
                             onClick={onClickCollapse}
                         >
                             <i className={isVisuallyExpanded
@@ -257,9 +257,9 @@ function SidebarDesktop() {
                             }></i>
                             <span className={iconVisibility}>Alunos</span>
                         </a>
-                        <ul className="navbar-nav collapse w-100 ps-4" id="collapse-alunos">
+                        <ul className="navbar-nav collapse w-100 ps-4" id="collapse-students">
                             <li className="nav-item border-bottom w-100">
-                                <Link to="/gerenciar-alunos" className={getLinkClass("/gerenciar-alunos")}>
+                                <Link to="/manage-students" className={getLinkClass("/manage-students")}>
                                     <i className={`bi bi-person-lines-fill ${showText ? "me-2" : ""}`}></i>
                                     <span className={iconVisibility}>Gerenciar Alunos</span>
                                 </Link>
@@ -271,9 +271,9 @@ function SidebarDesktop() {
                     <li className={expandedNavItemClass}>
                         <a
                             href="#"
-                            className={getGroupClass(["/gerenciar-cursos", "/gerenciar-turmas"])}
+                            className={getGroupClass(["/manage-courses", "/manage-classes"])}
                             data-bs-toggle="collapse"
-                            data-bs-target="#collapse-cursos"
+                            data-bs-target="#collapse-courses"
                             onClick={onClickCollapse}
                         >
                             <i className={isVisuallyExpanded
@@ -282,15 +282,15 @@ function SidebarDesktop() {
                             }></i>
                             <span className={iconVisibility}>Cursos</span>
                         </a>
-                        <ul className="navbar-nav collapse w-100 ps-4" id="collapse-cursos">
+                        <ul className="navbar-nav collapse w-100 ps-4" id="collapse-courses">
                             <li className="nav-item border-bottom w-100">
-                                <Link to="/gerenciar-cursos" className={getLinkClass("/gerenciar-cursos")}>
+                                <Link to="/manage-courses" className={getLinkClass("/manage-courses")}>
                                     <i className={`bi bi-journal-text ${showText ? "me-2" : ""}`}></i>
                                     <span className={iconVisibility}>Gerenciar Cursos</span>
                                 </Link>
                             </li>
                             <li className="nav-item border-bottom w-100">
-                                <Link to="/gerenciar-turmas" className={getLinkClass("/gerenciar-turmas")}>
+                                <Link to="/manage-classes" className={getLinkClass("/manage-classes")}>
                                     <i className={`bi bi-collection ${showText ? "me-2" : ""}`}></i>
                                     <span className={iconVisibility}>Gerenciar Turmas</span>
                                 </Link>

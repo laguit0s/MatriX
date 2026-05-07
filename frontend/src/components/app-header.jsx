@@ -1,5 +1,4 @@
-// cabecalho padrao reutilizado nas paginas administrativas
-function Header({ title, Modal, modalID }) {
+function AppHeader({ title, ModalComponent, modalId }) {
     
     return (
         <div className="app-header px-3 px-md-4 py-3 m-0">
@@ -14,14 +13,13 @@ function Header({ title, Modal, modalID }) {
                             <span className="input-group-text"><i className="bi bi-search"></i></span>
                             <input type="search" placeholder="Buscar" name="#" id="#" className="form-control"/>
                         </div>
-                        <button type="button" className="btn btn-primary w-100 align-self-start" data-bs-toggle="modal" data-bs-target={modalID}>Adicionar +</button>
+                        <button type="button" className="btn btn-primary w-100 align-self-start" data-bs-toggle="modal" data-bs-target={modalId}>Adicionar +</button>
                     </form>
-                    {/* renderiza modal caso seja passado por propriedade */}
-                    {Modal && <Modal />}
+                    {ModalComponent && <ModalComponent />}
                 </div>
             </div>
         </div>
     );
 }
 
-export default Header;
+export default AppHeader;

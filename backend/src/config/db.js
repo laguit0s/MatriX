@@ -1,8 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
 
-const prisma = new PrismaClient ({
+const prismaClient = new PrismaClient({
   errorFormat: 'minimal',
 });
 
-module.exports = prisma;
+module.exports = prismaClient;

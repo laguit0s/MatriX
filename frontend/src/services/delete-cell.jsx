@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import api from "./api";
 
-function DeleteCell(route, item_id, icon) {
+function deleteActionCell(route, itemId, icon) {
     async function sendRequest() {
-        await api.delete(route + item_id);
+        await api.delete(route + itemId);
         window.location.reload(); // atualiza a tabela carregando os dados do servidor
     }
     return (
@@ -11,4 +11,4 @@ function DeleteCell(route, item_id, icon) {
     )
 }
 
-export default DeleteCell;
+export default deleteActionCell;
