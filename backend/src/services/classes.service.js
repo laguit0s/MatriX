@@ -50,10 +50,12 @@ async function createClassName(courseId) {
     });
     courseCode = courseCode.code;
 
-    let classNumber = await prisma.classGroup.count({
-        where: { courseId: Number(courseId), year: currentYear }
+    let classNumber = await prisma.classGroup.findFirst({
+        where: { courseId: Number(courseId) },
+        orderBy: { number: 'desc' },
     });
-    classNumber++;
+
+    !classNumber ? classNumber = 1 : classNumber = classNumber.number + 1;
 
     const className = `${currentYear}.${String(classNumber).padStart(2, '0')}.${courseCode.toUpperCase()}`;
 
