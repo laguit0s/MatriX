@@ -1,35 +1,102 @@
 import api from '../../services/api';
-import { IMask, IMaskInput } from 'react-imask';
+import { IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { useEffect, useState, useMemo } from 'react';
 
-const onlyDigits = (value) => (value ? String(value).replace(/\D/g, '') : '');
-
 function StudentFormModal({ data: initialData, title }) {
     let [courses, setCourses] = useState(null);
     let [classes, setClasses] = useState(null);
 
+    const onlyDigits = (val) => val.replace(/\D/g, '');
+
     // valida dados pessoais e ids de curso/turma quando houver matricula inicial
     const studentSchema = z.object({
-        fullName: z.string().min(1, 'O nome é obrigatório'),
-        cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
-        birthDate: z.string().min(10, 'A data de nascimento deve conter 10 dígitos').max(10, 'A data de nascimento deve conter 8 dígitos'),
-        phone: z.string().min(10, 'O telefone deve conter entre 10 e 11 dígitos').max(11, 'O telefone deve conter entre 10 e 11 dígitos'),
-        email: z.string().email('E-mail inválido'),
-        courseId: z.coerce.number().optional(),
-        classGroupId: z.coerce.number().optional(),
+        fullName: 
+            z.string()
+            .trim()
+            .min(1, 'O nome é obrigatório')
+            .max(300, 'Nome muito grande'),
+        cpf: 
+            z.string()
+            .transform((val) => val.replace(/\D/g, ''))
+            .pipe(
+              z.string()
+                .length(11, 'O CPF deve conter 11 dígitos')
+            ),
+        birthDate: 
+            z.string()
+            .transform((val) => val.replace(/\D/g, ''))
+            .refine((val) => /^\d{8}$/.test(val), {
+                message: 'Data inválida'
+            })
+            .refine((val) => {
+                const day = Number(val.slice(0, 2));
+                const month = Number(val.slice(2, 4));
+                const year = Number(val.slice(4, 8));
+
+                const date = new Date(year, month - 1, day);
+
+                return (
+                    date.getFullYear() === year &&
+                    date.getMonth() === month - 1 &&
+                    date.getDate() === day
+                );
+            }, {
+                message: 'Data inválida'
+            })
+            .transform((val) => {
+                const day = Number(val.slice(0, 2));
+                const month = Number(val.slice(2, 4));
+                const year = Number(val.slice(4, 8));
+
+                return new Date(year, month - 1, day);
+            })
+            .pipe(
+                z.date().max(new Date(), 'Data inválida')
+            ),
+        phone: 
+            z.string()
+            .transform((val) => val.replace(/\D/g, ''))
+            .pipe(
+                z.string()
+                    .length(11, 'O telefone deve conter 11 dígitos')
+            ),
+        email: 
+            z.string()
+            .trim()
+            .toLowerCase()
+            .email('E-mail inválido'),
+        courseId: 
+            z.coerce.number()
+            .int()
+            .positive()
+            .nullish(),
+        classGroupId: 
+            z.coerce.number()
+            .int()
+            .positive()
+            .nullish(),
     });
 
-    const { control, watch, register, handleSubmit, setValue, formState: { errors, dirtyFields } } = useForm({ resolver: zodResolver(studentSchema), defaultValues: {
-        fullName: initialData ? initialData.fullName : '',
-        cpf: initialData ? onlyDigits(initialData.cpf) : '',
-        birthDate: initialData ? initialData.birthDate : '',
-        phone: initialData ? onlyDigits(initialData.phone) : '',
-        email: initialData ? initialData.email : '',
-        courseId: null,
-        classGroupId: null
+    const { 
+        control, 
+        watch, 
+        register, 
+        handleSubmit, 
+        setValue, 
+        formState: { errors, dirtyFields } } 
+        = useForm({ 
+            resolver: zodResolver(studentSchema), 
+            defaultValues: {
+                fullName: initialData ? initialData.fullName : '',
+                cpf: initialData ? onlyDigits(initialData.cpf) : '',
+                birthDate: initialData ? initialData.birthDate : '',
+                phone: initialData ? onlyDigits(initialData.phone) : '',
+                email: initialData ? initialData.email : '',
+                courseId: null,
+                classGroupId: null
     }});
 
     const hasOpenClasses = classes && classes.filter(classGroup => (watch('courseId') == classGroup.courseId) && classGroup.status == "ABERTA").length > 0;
@@ -59,7 +126,7 @@ function StudentFormModal({ data: initialData, title }) {
     useEffect(() => {
         async function loadCourses() {
             const response = await api.get('/api/manage-courses');
-            setCourses(response.data);
+            response.data.length && setCourses(response.data);
         }
         !initialData && loadCourses();
     }, []);
@@ -78,6 +145,7 @@ function StudentFormModal({ data: initialData, title }) {
             validClasses.length ? setValue('classGroupId', validClasses[0].id) : setValue('classGroupId', null);
             console.log('Course ID: ' + watch('courseId') + ' | Class ID: ' + watch('classGroupId'));
         }
+        console.log(watch('courseId'))
     }, [watch('courseId')]);
 
     const onSubmit = async (formData) => {
@@ -161,27 +229,23 @@ function StudentFormModal({ data: initialData, title }) {
                                                     <option key={i} value={course.id}>{course.name}</option>
                                                 ))
                                                 :
-                                                (
-                                                    <option value="">SEM CURSOS CADASTRADOS</option>
-                                                )
+                                                (<option value="">SEM CURSOS CADASTRADOS</option>)
                                             }
                                         </select>
                                     </div>
                                     <div className="col">
                                         <label>Turma:</label>
-                                        <select className='form-select' {...register('classGroupId')} value="" disabled={!watch('courseId') || !hasOpenClasses ? true : false}>
+                                        <select className='form-select' {...register('classGroupId')} disabled={!watch('courseId') || !hasOpenClasses ? true : false}>
                                             {
-                                                classes &&
+                                                classes 
+                                                &&
                                                 classes.filter(classGroup => classGroup.courseId == Number(watch('courseId')) && classGroup.status == 'ABERTA').length 
                                                 ?
                                                 classes.filter(classGroup => classGroup.courseId == Number(watch('courseId')) && classGroup.status == 'ABERTA').map((classGroup, i) => (
                                                     <option key={i} value={classGroup.id}>{classGroup.name}</option>
                                                 ))
                                                 :
-                                                (
-                                                    <option disabled value="">SEM TURMAS ABERTAS PARA O CURSO</option>
-                                                )
-
+                                                (<option disabled value="">SEM TURMAS ABERTAS PARA O CURSO</option>)
                                             }
                                         </select>
                                         {errors.classGroupId && (<p className='text-danger'>{errors.classGroupId.message}</p>)}

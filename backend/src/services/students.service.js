@@ -55,14 +55,12 @@ async function createEnrollment(studentId, courseId, classGroupId) {
 
 // cria aluno e, quando informado, ja vincula ao curso/turma selecionados
 async function createStudent(body) {
-  const dateParts = body.birthDate.split('/');
-  const birthDateIso = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T12:00:00Z`);
 
   const student = await prisma.student.create({
     data: {
       fullName: body.fullName.toUpperCase(),
       cpf: body.cpf,
-      birthDate: birthDateIso,
+      birthDate: body.birthDate,
       email: body.email,
       phone: body.phone
     }
@@ -127,8 +125,7 @@ async function updateStudent(body, id) {
   }
 
   if (body.birthDate !== undefined) {
-    const [day, month, year] = body.birthDate.split('/');
-    data.birthDate = new Date(`${year}-${month}-${day}T12:00:00Z`);
+    data.birthDate = body.birthDate;
   }
 
   if (body.email !== undefined) {
