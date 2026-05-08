@@ -10,7 +10,7 @@ function StudentProfile() {
     const { id } = useParams();
     let [data, setData] = useState(null);
 
-    // requisita no servidor a exibicao com formatacao visual do aluno
+    // busca dados completos do aluno para exibir e editar no mesmo fluxo
     useEffect(() => {
         async function carregarDados() {
             try {
@@ -23,7 +23,7 @@ function StudentProfile() {
         carregarDados();
     }, [id])
 
-    // aguarda termino da busca antes exibir blocos formatados em display
+    // renderiza spinner ate o retorno da api
     return data ? (
         
         <div className="d-flex flex-column h-100 w-100">
@@ -85,5 +85,5 @@ function StudentProfile() {
     );
 }
 
-// exporta interface montada
+// exporta a tela de perfil do aluno
 export default StudentProfile;

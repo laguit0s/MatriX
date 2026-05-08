@@ -7,16 +7,16 @@ require('dotenv').config();
 
 const app = express();
 
-// habilita cors e leitura json
+// habilita requisicoes entre frontend e backend e parse automatico de json
 app.use(cors());
 app.use(express.json());
 
-// route handlers
+// registra os modulos principais da api por contexto de negocio
 app.use('/api/manage-students', studentsRouter);
 app.use('/api/manage-courses', coursesRouter);
 app.use('/api/manage-classes', classesRouter);
 
 const PORT = process.env.PORT || 5000;
 
-// inicia o servidor
+// sobe o servidor na porta configurada no ambiente
 app.listen(PORT);

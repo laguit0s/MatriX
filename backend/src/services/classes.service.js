@@ -1,5 +1,6 @@
 const prisma = require('../config/db');
 
+// lista turmas com nome do curso para simplificar o consumo no frontend
 async function listClasses() {
     const classes = await prisma.classGroup.findMany({
         orderBy: { name: 'asc' },
@@ -18,6 +19,7 @@ async function listClasses() {
     }));
 }
 
+// busca uma turma e adapta o retorno com nome do curso associado
 async function listClass(id) {
     const _class_ = await prisma.classGroup.findUnique({
         where: { id: Number(id) },
@@ -38,6 +40,7 @@ async function listClass(id) {
     return formattedClass;
 }
 
+// gera nome sequencial da turma por curso e ano corrente
 async function createClassName(courseId) {
     const currentYear = new Date().getFullYear();
 
@@ -57,6 +60,7 @@ async function createClassName(courseId) {
     return {name: className, number: classNumber, year: currentYear};
 }
 
+// cria turma com contadores iniciais de ocupacao e status informado
 async function createClass(body) {
     const newClassData = await createClassName(body.courseId);
     await prisma.classGroup.create({
@@ -73,6 +77,7 @@ async function createClass(body) {
     });
 }
 
+// remove turma dentro de transacao para manter consistencia de matriculas e alunos
 async function deleteClass(id) {
     const classId = Number(id);
 
@@ -107,6 +112,7 @@ async function deleteClass(id) {
     });
 }
 
+// aplica update parcial e recalcula vagas disponiveis conforme alunos matriculados
 async function updateClass(body, id) {
     const data = {};
 
@@ -136,6 +142,7 @@ async function updateClass(body, id) {
         })
 
         if (data.courseId) {
+            // ao trocar o curso, regenera identificacao da turma para novo contexto
             const newClassData = await createClassName(body.courseId);
             await tx.classGroup.update({
                 where: {id: Number(id)},

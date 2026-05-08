@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
 
+// centraliza a conexao com o banco para ser reutilizada em toda a api
 const prismaClient = new PrismaClient({
   errorFormat: 'minimal',
 });

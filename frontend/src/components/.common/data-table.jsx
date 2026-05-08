@@ -1,6 +1,6 @@
 import React from 'react';
 
-// renderiza a tabela dinamica de dados
+// renderiza tabela reutilizavel para diferentes modulos do sistema
 function DataTable({
     headerContent = [],
     bodyContent = [],
@@ -12,12 +12,12 @@ function DataTable({
     columnOrder = {},
 }) {
 
-    // filtra propriedades que devem ser ignoradas
+    // remove campos tecnicos que nao devem aparecer para o usuario
     const properties = bodyContent[0]
         ? Object.keys(bodyContent[0]).filter(key => !ignoredProperties.includes(key))
         : [];
     
-    // aplica reordenação baseada em colOrder
+    // reposiciona colunas quando a tela precisa de uma ordem especifica
     if (Object.keys(columnOrder).length !== 0) {
         const columnOrderKeys = Object.keys(columnOrder);
         for (let i = 0; i < columnOrderKeys.length; i++) {
@@ -25,9 +25,7 @@ function DataTable({
             const targetOneBased = Number(key);
             if (Number.isNaN(targetOneBased)) continue;
 
-            // Contagem a partir da coluna de configuração (1 = config).
-            // As propriedades começam na posição 2, portanto mapeamos
-            // targetOneBased -> índice em `properties` subtraindo 2.
+            // a primeira coluna e reservada para acoes, por isso o ajuste de indice
             const propTargetIndex = targetOneBased - 2;
             const propName = columnOrder[key];
             const currentIndex = properties.indexOf(propName);
@@ -41,12 +39,12 @@ function DataTable({
         }
     }
 
-    // define classes css do cabecalho com base no indice (1-based mapping)
+    // aplica classes personalizadas do cabecalho por posicao de coluna
     const getHeaderClass = colIndex => {
         return `sticky-top text-center app-table__head-cell ${headerColumnClasses[colIndex + 1] || ''}`;
     };
 
-    // define classes css do corpo, aplica alinhamento central caso nao definido
+    // centraliza por padrao e respeita alinhamentos especificos por coluna
     const getBodyClass = colIndex => {
         const columnClass = bodyColumnClasses[colIndex + 1] || "";
         return `${columnClass.includes("text-start") || columnClass.includes("text-end") ? columnClass : `${columnClass} text-center`}`;

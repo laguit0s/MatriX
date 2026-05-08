@@ -3,16 +3,19 @@ import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 function ClassFormModal({ data, title }) {
     let [courses, setCourses] = useState(null);
 
-    const classSchema = z.object({
-        courseId: z.coerce.number(),
+    // valida limites de vagas e campos obrigatorios antes do envio para api
+    const classSchema = useMemo(() => z.object({
+        courseId: z.coerce.number().refine(
+            (val) => courses ? courses.some((e) => e.id == val) : false, { message: "Sem cursos válidos para criar a turma." }
+        ),
         maxSeats: z.coerce.number().min(1, 'A turma deve ter pelo menos um aluno.').max(1000, 'Limite de alunos excedido.'),
         status: z.string(),
-    });
+    }), [courses]);
 
     const { register, watch, setValue, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(classSchema), defaultValues: {
         courseId: data && data.courseId,
@@ -20,6 +23,7 @@ function ClassFormModal({ data, title }) {
         status: data ? data.status : 'PLANEJADA',
     }});
 
+    // carrega cursos para preencher o seletor de turma
     useEffect(() => {
         async function loadCourses() {
             const response = await api.get('/api/manage-courses');
@@ -28,6 +32,7 @@ function ClassFormModal({ data, title }) {
         loadCourses();
     }, []);
 
+    // no cadastro, seleciona automaticamente o primeiro curso disponivel
     useEffect(() => {
         if (!data && courses && !watch('courseId')) {
             setValue('courseId', courses[0].id);
@@ -37,6 +42,7 @@ function ClassFormModal({ data, title }) {
     const onSubmit = async (formData) => {
         const payload = formData;
 
+        // reaproveita o mesmo formulario para cadastro e edicao
         if (data) {
             await api.patch(`/api/manage-classes/${data.id}`, payload);
         } else {
@@ -62,17 +68,26 @@ function ClassFormModal({ data, title }) {
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col form-group">
                                 <label>Curso:</label>
-                                <select className='form-select' value={watch('courseId') ?? ''} {...register('courseId')}>
-                                    {
-                                        courses && courses.map((course, i) => (
-                                            <option key={i} value={course.id}>{course.name}</option>
-                                        ))
-                                    }
+                                <select className='form-select' {...register('courseId')} disabled={courses ? false : true}>
+                                    { courses 
+                                        ? 
+                                        (
+                                            courses && courses.map((course, i) => (
+                                                <option key={i} value={course.id}>{course.name}</option>
+                                            ))
+                                        )
+                                        :
+                                        (
+                                            <option value="">SEM CURSOS CADASTRADOS</option>
+                                        )
+                                    }                             
                                 </select>
+                                {errors.courseId && <span className='text-danger'>{errors.courseId.message}</span>}
                             </div>
                             <div className="col form-group">
                                 <label>Quantidade de alunos:</label>
                                 <input className='form-control' type="number" {...register('maxSeats')}/>
+                                {errors.maxSeats && (<span className='text-danger'>{errors.maxSeats.message}</span>)}
                             </div>
                             <div className="col-12 form-group">
                                 <label>Status:</label>

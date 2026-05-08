@@ -1,6 +1,7 @@
 function AppHeader({ title, ModalComponent, modalId }) {
     
     return (
+        // padrao de cabecalho compartilhado entre as telas de gerenciamento
         <div className="app-header px-3 px-md-4 py-3 m-0">
             <div className="container-fluid flex-column flex-md-row align-items-start align-items-md-center justify-content-center justify-content-md-between">
                 <div className="row">
@@ -13,6 +14,7 @@ function AppHeader({ title, ModalComponent, modalId }) {
                             <span className="input-group-text"><i className="bi bi-search"></i></span>
                             <input type="search" placeholder="Buscar" name="#" id="#" className="form-control"/>
                         </div>
+                        {/* o botao abre o modal de cadastro/edicao recebido por props */}
                         <button type="button" className="btn btn-primary w-100 align-self-start" data-bs-toggle="modal" data-bs-target={modalId}>Adicionar +</button>
                     </form>
                     {ModalComponent && <ModalComponent />}

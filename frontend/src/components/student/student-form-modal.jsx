@@ -11,6 +11,7 @@ function StudentFormModal({ data: initialData, title }) {
     let [courses, setCourses] = useState(null);
     let [classes, setClasses] = useState(null);
 
+    // valida dados pessoais e ids de curso/turma quando houver matricula inicial
     const studentSchema = z.object({
         fullName: z.string().min(1, 'O nome é obrigatório'),
         cpf: z.string().min(11, 'O CPF deve conter 11 dígitos').max(11, 'O CPF deve conter 11 dígitos'),
@@ -31,6 +32,9 @@ function StudentFormModal({ data: initialData, title }) {
         classGroupId: null
     }});
 
+    const hasOpenClasses = classes && classes.filter(classGroup => (watch('courseId') == classGroup.courseId) && classGroup.status == "ABERTA").length > 0;
+
+    // no cadastro, carrega turmas para permitir matricula imediata
     useEffect(() => {
         async function loadClasses() {
             const response = await api.get('/api/manage-classes');
@@ -39,12 +43,19 @@ function StudentFormModal({ data: initialData, title }) {
         !initialData && loadClasses();
     }, []);
 
+    // define a primeira turma disponivel para evitar select sem valor inicial
     useEffect(() => {
         if (!initialData && classes?.length && !watch('classGroupId')) {
-            setValue('classGroupId', String(classes[0].id));
+            const selectedCourseId = watch('courseId');
+            const candidate = classes.find(cg =>
+                cg.status === 'ABERTA' &&
+                (selectedCourseId ? cg.courseId == Number(selectedCourseId) : true)
+            );
+            setValue('classGroupId', candidate ? String(candidate.id) : null);
         }
-    }, [classes]);
+    }, [classes, watch('courseId')]);
 
+    // carrega cursos apenas no fluxo de cadastro
     useEffect(() => {
         async function loadCourses() {
             const response = await api.get('/api/manage-courses');
@@ -53,12 +64,14 @@ function StudentFormModal({ data: initialData, title }) {
         !initialData && loadCourses();
     }, []);
 
+    // define curso inicial quando houver opcoes retornadas pela api
     useEffect(() => {
         if (!initialData && courses?.length && !watch('courseId')) {
             setValue('courseId', String(courses[0].id));
         }
     }, [courses]);
 
+    // atualiza turma selecionada para manter curso e turma consistentes
     useEffect(() => {
         if (courses && classes) {
             const validClasses = classes.filter(classGroup => classGroup.courseId == watch('courseId'));
@@ -68,6 +81,7 @@ function StudentFormModal({ data: initialData, title }) {
     }, [watch('courseId')]);
 
     const onSubmit = async (formData) => {
+        // no update, envia apenas campos alterados para evitar sobrescrita desnecessaria
         const payload = Object.fromEntries(
             Object.entries(formData).filter(([campo]) => dirtyFields[campo])
         );
@@ -155,7 +169,7 @@ function StudentFormModal({ data: initialData, title }) {
                                     </div>
                                     <div className="col">
                                         <label>Turma:</label>
-                                        <select className='form-select' {...register('classGroupId')} disabled={!watch('classGroupId') ? true : false}>
+                                        <select className='form-select' {...register('classGroupId')} value="" disabled={!watch('courseId') || !hasOpenClasses ? true : false}>
                                             {
                                                 classes &&
                                                 classes.filter(classGroup => classGroup.courseId == Number(watch('courseId')) && classGroup.status == 'ABERTA').length 

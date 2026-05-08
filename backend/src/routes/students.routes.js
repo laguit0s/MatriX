@@ -3,6 +3,7 @@ const studentsController = require('../controllers/students.controller');
 
 const studentsRouter = Router();
 
+// concentra os endpoints de alunos usados pela area administrativa
 studentsRouter.get('/:id', studentsController.getStudentProfile);
 studentsRouter.patch('/:id', studentsController.updateStudent);
 studentsRouter.get('/', studentsController.listStudents);

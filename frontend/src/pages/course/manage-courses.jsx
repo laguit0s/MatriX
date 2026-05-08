@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 function ManageCourses() {
     const [courses, setCourses] = useState(null);
 
+    // busca cursos na api para popular a listagem principal
     useEffect(() => {
         async function loadCourses() {
             const response = await api.get('/api/manage-courses');
@@ -19,6 +20,7 @@ function ManageCourses() {
 
     const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CÓDIGO", "VALOR", "COBRANÇA", ''];
 
+    // mostra indicador de carregamento ate receber os dados
     return courses ? (
         <div className="d-flex flex-column h-100">
             <AppHeader title="GERENCIAR CURSOS" ModalComponent={() => <CourseFormModal title={'Cadastrar curso'} />} modalId={"#course-form-modal"} />

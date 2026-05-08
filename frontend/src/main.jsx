@@ -5,9 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-// Ponto de entrada da aplicação React.
+// ponto de entrada da aplicacao react
 createRoot(document.getElementById('root')).render(
-  // StrictMode ajuda a detectar efeitos colaterais durante o desenvolvimento.
+  // strictmode ajuda a identificar efeitos colaterais durante o desenvolvimento
   <StrictMode>
     <App />
   </StrictMode>,

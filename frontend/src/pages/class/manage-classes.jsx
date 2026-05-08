@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 function ManageClasses() {
     const [classes, setClasses] = useState(null);
 
+    // carrega turmas com dados agregados de curso para a tabela
     useEffect(() => {
         async function loadClasses() {
             const response = await api.get('/api/manage-classes');
@@ -17,8 +18,9 @@ function ManageClasses() {
         loadClasses();
     }, []);
 
-    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CURSO", "ANO", "ALUNOS", 'VAGAS', 'STATUS', ''];
+    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CURSO", "ANO", "ALUNOS", 'VAGAS', 'SITUAÇÃO', ''];
 
+    // exibe fallback visual ate concluir a consulta inicial
     return classes ? (
         <div className="d-flex flex-column h-100">
             <AppHeader title="GERENCIAR TURMAS" ModalComponent={() => <ClassFormModal title={'Cadastrar turma'} />} modalId={'#class-form-modal'} />

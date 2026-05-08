@@ -9,7 +9,7 @@ function ClassProfile() {
     const { id } = useParams();
     let [data, setData] = useState(null);
 
-    // requisita no servidor a exibicao com formatacao visual da turma
+    // busca detalhes da turma para exibir indicadores e permitir edicao
     useEffect(() => {
         async function carregarDados() {
             try {
@@ -22,7 +22,7 @@ function ClassProfile() {
         carregarDados();
     }, [id])
 
-    // aguarda termino da busca antes exibir blocos formatados em display
+    // mantém spinner ativo ate os dados serem carregados
     return data ? (
         
         <div className="d-flex flex-column h-100 w-100">
@@ -82,5 +82,5 @@ function ClassProfile() {
     );
 }
 
-// exporta interface montada
+// exporta a tela de detalhes da turma
 export default ClassProfile;

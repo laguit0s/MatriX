@@ -9,16 +9,16 @@ import ClassProfile from "./pages/class/class-profile";
 
 import "./styles/global.css";
 
-// estrutura principal da navegacao e layout
+// organiza o layout base e define as rotas principais do painel
 function App() {
   return (
-    // layout com barra lateral e painel de conteudo
+    // mantem sidebar fixa e area de conteudo navegavel
     <div className="d-flex flex-grow-1 h-100" style={{ minWidth: 0 }}>
       <BrowserRouter>
         <SidebarDesktop />
         <div className="routes-container content-wrapper">
           <Routes>
-            {/* rotas base dos modulos administrativos */}
+            {/* separa os fluxos de alunos, cursos e turmas */}
             <Route path="/manage-students" element={<ManageStudents />} />
             <Route path="/manage-students/:id" element={<StudentProfile />} />
             <Route path="/manage-courses" element={<ManageCourses />} />

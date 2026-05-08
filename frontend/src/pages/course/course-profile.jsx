@@ -9,7 +9,7 @@ function CourseProfile() {
     const { id } = useParams();
     let [data, setData] = useState(null);
 
-    // requisita no servidor a exibicao com formatacao visual do aluno
+    // busca detalhes do curso para preencher card e modal de edicao
     useEffect(() => {
         async function carregarDados() {
             try {
@@ -22,7 +22,7 @@ function CourseProfile() {
         carregarDados();
     }, [id])
 
-    // aguarda termino da busca antes exibir blocos formatados em display
+    // exibe carregamento enquanto os dados nao chegam do backend
     return data ? (
         
         <div className="d-flex flex-column h-100 w-100">
@@ -73,5 +73,5 @@ function CourseProfile() {
     );
 }
 
-// exporta interface montada
+// exporta a tela de detalhes do curso
 export default CourseProfile;

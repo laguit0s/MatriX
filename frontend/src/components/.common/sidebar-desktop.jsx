@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom"
 function SidebarDesktop() {
     const location = useLocation();
 
-    // estados de controle visual barra de menu desktop e mobile
+    // controla expansao da sidebar e comportamento especifico no mobile
     const [isExpanded, setIsExpanded] = useState(() => {
         const saved = localStorage.getItem("expanded");
         if (saved !== null) {
@@ -17,13 +17,13 @@ function SidebarDesktop() {
     const [isMobile, setIsMobile] = useState(false)
     const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-    // controle numericos e chaves auxiliares base 
+    // define limites de largura para transicao visual
     const MAX_WIDTH = 250
     const MIN_WIDTH = 60
 const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
     const mobileWidth = "min(85vw, 320px)"
 
-    // variaveis de controle de comportamento de css
+    // concentra estilos dinamicos usados no desktop e no mobile
     const navbarStyles = {
         mobileNavbar: {
             zIndex: 1060
@@ -39,7 +39,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
             left: 0,
             width: mobileWidth,
             minWidth: mobileWidth,
-            // Altura dinâmica (dvh) para não ficar atrás da barra do navegador no mobile
+            // usa dvh para evitar corte da sidebar por barras do navegador mobile
             height: 'calc(100dvh - 60px)',
             transform: isMobileOpen ? 'translateX(0)' : 'translateX(-100%)',
             transition: 'transform 0.3s ease',
@@ -52,7 +52,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
         }
     }
 
-    // CSS Classes
+    // calcula classes de layout com base no estado atual do menu
     const isVisuallyExpanded = isExpanded || isMobile;
     
     const baseNavItemClass = "nav-item w-100"
@@ -64,7 +64,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
     const collapsedNavLinkClass = `${baseNavLinkClass} text-center`
     const navLinkClass = isVisuallyExpanded ? expandedNavLinkClass : collapsedNavLinkClass
 
-    // Helpers de rotas ativas
+    // destaca menus ativos conforme rota atual
     const getGroupClass = (paths) => {
         const isActive = paths.some(p => location.pathname.startsWith(p));
         return `${navLinkClass} ${isActive ? "text-muted fw-bold" : ""}`;
@@ -72,11 +72,11 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
 
     const getLinkClass = (path) => {
         const isActive = location.pathname.startsWith(path);
-        // Adicionada a classe 'ms-3' para dar a margem à esquerda hierárquica nos links internos
+        // aplica recuo nos links internos para reforcar hierarquia visual
         return `nav-link w-100 ms-3 ${isActive ? "text-muted fw-bold" : ""}`;
     };
 
-    // Handlers de interação e sincronização visual.
+    // fecha submenus ao recolher para evitar inconsistencias de estado visual
     const closeAllSubmenus = () => {
         COLLAPSE_IDS.forEach((id) => {
             const submenu = document.getElementById(id)
@@ -124,7 +124,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
         }
     }
 
-    // Listener de media query para alternar comportamento entre desktop e mobile.
+    // alterna comportamento do menu quando a tela cruza o breakpoint mobile
     useEffect(() => {
         const mediaQuery = window.matchMedia("(max-width: 767.98px)")
 
@@ -137,12 +137,12 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
             } else {
                 setIsMobileOpen(false)
                 
-                // Ao entrar em modo desktop (ou carregar a página), recupera o que estava salvo
+                // no desktop, restaura preferencia de expansao salva no navegador
                 const saved = localStorage.getItem("expanded")
                 const isExp = saved !== null ? JSON.parse(saved) : true
                 
                 setIsExpanded(isExp)
-                setShowText(isExp) // se expandido mostra o texto, se não esconde
+                setShowText(isExp) // exibe textos apenas quando a sidebar esta expandida
             }
         }
 
@@ -157,14 +157,14 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
         return () => mediaQuery.removeListener(handleMediaChange)
     }, [])
 
-    // Derivados de estado usados apenas na renderização.
+    // valores derivados para simplificar a renderizacao do jsx
     const sidebarOpen = isMobile ? isMobileOpen : true
     const arrowIcon = isExpanded ? "bi-arrow-left" : "bi-arrow-right"
     const iconVisibility = showText ? "d-inline" : "d-none"
 
     return (
         <>
-            {/* Mobile Navbar */}
+            {/* navbar superior exibida apenas no mobile */}
             {isMobile && (
                 <nav
                     className="navbar navbar-light bg-light border-bottom d-md-none position-fixed top-0 start-0 w-100"
@@ -187,7 +187,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                 </nav>
             )}
 
-            {/* Mobile Overlay */}
+            {/* overlay fecha o menu ao clicar fora da sidebar */}
             {isMobile && sidebarOpen && (
                 <div
                     className="position-fixed top-0 start-0 w-100 h-100 d-md-none"
@@ -197,16 +197,16 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                 />
             )}
 
-            {/* Sidebar */}
+            {/* sidebar principal com navegacao do painel */}
             <nav
-                // Removemos o 'h-100' no mobile para o Bootstrap não sobrescrever nossa altura calc(100dvh)
+                // evita conflito de altura no mobile com a regra h-100 do bootstrap
                 className={`navbar flex-shrink-0 ${!isMobile ? 'h-100' : ''} bg-light border-end d-md-block p-0 flex-column`}
                 style={navbarStyles.sidebar}
                 onTransitionEnd={handleTransition}
             >
-                {/* Removemos o 'h-100' da ul. O 'flex-grow-1' já cuida de preencher o espaço. */}
+                {/* flex-grow ja ocupa o espaco restante sem forcar altura fixa */}
                 <ul className="navbar-nav d-flex flex-column w-100 h-100">
-                    {/* Logo (Exibido apenas no Desktop) */}
+                    {/* logo fica no topo apenas na versao desktop */}
                     {!isMobile && (
                         <li className={isExpanded ? baseNavItemClass : `${baseNavItemClass} d-flex flex-column align-items-center`}>
                             <button
@@ -231,7 +231,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                         </li>
                     )}
 
-                    {/* Visão Geral */}
+                    {/* item de visao geral */}
                     <li className={expandedNavItemClass}>
                         <a href="#" className={navLinkClass}>
                             <i className={isVisuallyExpanded
@@ -242,7 +242,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                         </a>
                     </li>
 
-                    {/* Alunos */}
+                    {/* grupo de rotas de alunos */}
                     <li className={expandedNavItemClass}>
                         <a
                             href="#"
@@ -267,7 +267,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                         </ul>
                     </li>
 
-                    {/* Cursos */}
+                    {/* grupo de rotas de cursos e turmas */}
                     <li className={expandedNavItemClass}>
                         <a
                             href="#"
@@ -298,7 +298,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                         </ul>
                     </li>
 
-                    {/* Configurações: mt-auto mantido para colar no rodapé */}
+                    {/* configuracoes fica no rodape para manter acesso rapido */}
                     <li className={`${expandedNavItemClass} mt-auto border-top`}>
                         <Link to="/configuracoes" className={getGroupClass(["/configuracoes"])}>
                             <i className={isVisuallyExpanded
@@ -309,7 +309,7 @@ const COLLAPSE_IDS = ["collapse-students", "collapse-courses"]
                         </Link>
                     </li>
 
-                    {/* Perfil */}
+                    {/* atalho para perfil do usuario */}
                     <li className={expandedNavItemClass}>
                         <Link to="/perfil" className={getGroupClass(["/perfil"])}>
                             <i className={isVisuallyExpanded

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 
 function CourseFormModal({ data, title }) {
+    // garante formato minimo dos dados antes de salvar curso
     const courseSchema = z.object({
         name: z.string().min(1, "Campo obrigatório.").max(300, "O nome não deve exceder 300 caracteres."),
         code: z.string().min(1, "Campo obrigatório").max(30, "O código não deve exceder 30 caracteres."),
@@ -22,6 +23,7 @@ function CourseFormModal({ data, title }) {
     const onSubmit = async (formData) => {
         const payload = formData;
 
+        // alterna entre edicao e cadastro conforme presenca de dados iniciais
         if (data) {
             await api.patch(`/api/manage-courses/${data.id}`, payload);
         } else {

@@ -1,6 +1,7 @@
 const prisma = require('../config/db');
 const formatter = require('../utils/formatters');
 
+// busca alunos ordenados e entrega campos prontos para exibicao na tabela
 async function listStudents() {
   const rows = await prisma.student.findMany({ orderBy: { fullName: 'asc' } });
   rows.forEach(row => {
@@ -12,6 +13,7 @@ async function listStudents() {
   return rows;
 }
 
+// cria matricula do aluno e sincroniza contadores de aluno e turma
 async function createEnrollment(studentId, courseId, classGroupId) {
   const classGroup = await prisma.classGroup.findUnique({
     where: { id: Number(classGroupId) },
@@ -22,6 +24,7 @@ async function createEnrollment(studentId, courseId, classGroupId) {
     return;
   }
 
+  // gera nome sequencial da matricula para manter identificacao unica por turma
   const enrollmentName = `${classGroup.name}.${String(classGroup.studentCount + 1).padStart(4, '0')}`;
 
   await prisma.enrollment.create({
@@ -50,6 +53,7 @@ async function createEnrollment(studentId, courseId, classGroupId) {
   });
 }
 
+// cria aluno e, quando informado, ja vincula ao curso/turma selecionados
 async function createStudent(body) {
   const dateParts = body.birthDate.split('/');
   const birthDateIso = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T12:00:00Z`);
@@ -69,6 +73,7 @@ async function createStudent(body) {
   }
 }
 
+// retorna perfil individual com mascaras aplicadas para a interface
 async function getStudentProfile(id) {
   const row = await prisma.student.findUnique({
     where: {
@@ -84,6 +89,7 @@ async function getStudentProfile(id) {
   return row;
 }
 
+// remove matriculas antes de excluir aluno para manter contagem de vagas correta
 async function deleteStudent(id) {
   const enrollments = await prisma.enrollment.findMany({
     where: { studentId: Number(id) }
@@ -108,6 +114,7 @@ async function deleteStudent(id) {
   });
 }
 
+// monta update parcial apenas com os campos realmente enviados
 async function updateStudent(body, id) {
   const data = {};
 

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 function ManageStudents() {
     const [students, setStudents] = useState(null);
 
+    // carrega lista inicial para alimentar a tabela de alunos
     useEffect(() => {
         async function loadStudents() {
             const response = await api.get('/api/manage-students');
@@ -19,6 +20,7 @@ function ManageStudents() {
 
     const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", 'MATRÍCULA', ''];
 
+    // exibe spinner enquanto a api ainda nao retornou os registros
     return students ? (
         <div className="d-flex flex-column h-100">
             <AppHeader title="GERENCIAR ALUNOS" ModalComponent={() => <StudentFormModal title={'Cadastrar aluno'} />} modalId={"#student-form-modal"} />
