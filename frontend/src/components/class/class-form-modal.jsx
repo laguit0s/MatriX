@@ -10,17 +10,29 @@ function ClassFormModal({ data, title }) {
 
     // valida limites de vagas e campos obrigatorios antes do envio para api
     const classSchema = useMemo(() => z.object({
-        courseId: z.coerce.number().refine(
-            (val) => courses ? courses.some((e) => e.id == val) : false, { message: "Sem cursos válidos para criar a turma." }
-        ),
-        maxSeats: z.coerce.number().min(1, 'A turma deve ter pelo menos um aluno.').max(1000, 'Limite de alunos excedido.'),
-        status: z.string(),
+        courseId: 
+            z.coerce.number()
+            .refine((val) => courses ? courses.some((e) => e.id == val) : false, { message: "Sem cursos válidos para criar a turma." }),
+        maxSeats: 
+            z.coerce.number()
+            .min(1, 'A turma deve ter pelo menos um aluno.')
+            .max(1000, 'Limite de alunos excedido.'),
+        status: 
+            z.enum(["PLANEJADA", "ABERTA", "ANDAMENTO", "FINALIZADA"], { message: "Valor inválido" }),
     }), [courses]);
 
-    const { register, watch, setValue, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(classSchema), defaultValues: {
-        courseId: data && data.courseId,
-        maxSeats: data && data.maxSeats,
-        status: data ? data.status : 'PLANEJADA',
+    const { 
+        register, 
+        watch, 
+        setValue, 
+        handleSubmit, 
+        formState: { errors } } 
+        = useForm({ 
+            resolver: zodResolver(classSchema), 
+            defaultValues: {
+                courseId: data && data.courseId,
+                maxSeats: data && data.maxSeats,
+                status: data ? data.status : 'PLANEJADA',
     }});
 
     // carrega cursos para preencher o seletor de turma
@@ -97,6 +109,7 @@ function ClassFormModal({ data, title }) {
                                     <option value="ANDAMENTO">Em andamento</option>
                                     <option value="FINALIZADA">Finalizada</option>
                                 </select>
+                                {errors.status && (<span className='text-danger'>{errors.status.message}</span>)}
                             </div>
                             <div className="col-12 d-flex gap-3">
                                 <button type="submit" className="btn btn-success w-100">Finalizar</button>

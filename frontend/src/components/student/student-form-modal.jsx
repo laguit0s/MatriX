@@ -12,12 +12,13 @@ function StudentFormModal({ data: initialData, title }) {
     const onlyDigits = (val) => val.replace(/\D/g, '');
 
     // valida dados pessoais e ids de curso/turma quando houver matricula inicial
-    const studentSchema = z.object({
+    const studentSchema = useMemo(() => z.object({
         fullName: 
             z.string()
             .trim()
             .min(1, 'O nome é obrigatório')
-            .max(300, 'Nome muito grande'),
+            .max(300, 'Nome muito grande')
+            .regex(/^[a-zA-Z0-9\s\-áéíóúàâãõç]+$/, "Contém caracteres inválidos"),
         cpf: 
             z.string()
             .transform((val) => val.replace(/\D/g, ''))
@@ -72,13 +73,15 @@ function StudentFormModal({ data: initialData, title }) {
             z.coerce.number()
             .int()
             .positive()
+            .refine((val) => courses.map(c => c.id).includes(val), { message: "Valor inválido" })
             .nullish(),
         classGroupId: 
             z.coerce.number()
             .int()
             .positive()
+            .refine((val) => classes.map(c => c.id).includes(val), { message: "Valor inválido" })
             .nullish(),
-    });
+    }), [courses, classes]);
 
     const { 
         control, 
@@ -183,7 +186,7 @@ function StudentFormModal({ data: initialData, title }) {
                                     <input {...field} className='form-control'></input>
                                 )}>
                                 </Controller>
-                                {errors.fullName && (<p className='text-danger'>{errors.fullName.message}</p>)}
+                                {errors.fullName && (<span className='text-danger'>{errors.fullName.message}</span>)}
                             </div>
                             <div className="col">
                                 <label htmlFor="student-cpf">CPF:</label>
@@ -191,7 +194,7 @@ function StudentFormModal({ data: initialData, title }) {
                                     <IMaskInput value={field.value} className='form-control' mask="000.000.000-00" onAccept={(value, mask) => field.onChange(mask.unmaskedValue)}></IMaskInput>
                                 )}>
                                 </Controller>
-                                {errors.cpf && (<p className='text-danger'>{errors.cpf.message}</p>)}
+                                {errors.cpf && (<span className='text-danger'>{errors.cpf.message}</span>)}
                             </div>
                             <div className="col">
                                 <label htmlFor="student-birth-date">Data de nascimento:</label>
@@ -199,7 +202,7 @@ function StudentFormModal({ data: initialData, title }) {
                                     <IMaskInput value={field.value} className='form-control' mask="00/00/0000" placeholder='DD/MM/AAAA' onAccept={(value) => field.onChange(value)}></IMaskInput>
                                 )}>
                                 </Controller>
-                                {errors.birthDate && (<p className='text-danger'>{errors.birthDate.message}</p>)}
+                                {errors.birthDate && (<span className='text-danger'>{errors.birthDate.message}</span>)}
                             </div>
                             <div className="col">
                                 <label htmlFor="student-phone">Telefone:</label>
@@ -207,7 +210,7 @@ function StudentFormModal({ data: initialData, title }) {
                                     <IMaskInput value={field.value} className='form-control' mask="(00) 00000-0000" onAccept={(value, mask) => field.onChange(mask.unmaskedValue)}></IMaskInput>
                                 )}>
                                 </Controller>
-                                {errors.phone && (<p className='text-danger'>{errors.phone.message}</p>)}
+                                {errors.phone && (<span className='text-danger'>{errors.phone.message}</span>)}
                             </div>
                             <div className="col-12">
                                 <label htmlFor="student-email">E-mail:</label>
@@ -215,7 +218,7 @@ function StudentFormModal({ data: initialData, title }) {
                                     <input {...field} className='form-control'></input>
                                 )}>
                                 </Controller>
-                                {errors.email && (<p className='text-danger'>{errors.email.message}</p>)}
+                                {errors.email && (<span className='text-danger'>{errors.email.message}</span>)}
                             </div>
                             {!initialData && (
                                 <>
@@ -232,6 +235,7 @@ function StudentFormModal({ data: initialData, title }) {
                                                 (<option value="">SEM CURSOS CADASTRADOS</option>)
                                             }
                                         </select>
+                                        {errors.courseId && (<span className='text-danger'>{errors.courseId.message}</span>)}
                                     </div>
                                     <div className="col">
                                         <label>Turma:</label>
@@ -248,7 +252,7 @@ function StudentFormModal({ data: initialData, title }) {
                                                 (<option disabled value="">SEM TURMAS ABERTAS PARA O CURSO</option>)
                                             }
                                         </select>
-                                        {errors.classGroupId && (<p className='text-danger'>{errors.classGroupId.message}</p>)}
+                                        {errors.classGroupId && (<span className='text-danger'>{errors.classGroupId.message}</span>)}
                                     </div>
                                 </>
                             )}
