@@ -3,11 +3,12 @@ const cors = require('cors');
 const studentsRouter = require('./routes/students.routes');
 const coursesRouter = require('./routes/courses.routes');
 const classesRouter = require('./routes/classes.routes');
+const errorHandler = require('./middlewares/error.middleware');
 require('dotenv').config();
 
 const app = express();
 
-// habilita requisicoes entre frontend e backend e parse automatico de json
+// middlewares globais
 app.use(cors());
 app.use(express.json());
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use('/api/manage-students', studentsRouter);
 app.use('/api/manage-courses', coursesRouter);
 app.use('/api/manage-classes', classesRouter);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
