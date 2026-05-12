@@ -26,7 +26,7 @@ function ClassFormModal({ data, title }) {
         watch, 
         setValue, 
         handleSubmit, 
-        formState: { errors } } 
+        formState: { errors, dirtyFields } } 
         = useForm({ 
             resolver: zodResolver(classSchema), 
             defaultValues: {
@@ -48,11 +48,15 @@ function ClassFormModal({ data, title }) {
     useEffect(() => {
         if (!data && courses && !watch('courseId')) {
             setValue('courseId', courses[0].id);
+        } else if (data) {
+            setValue('courseId', data.courseId);
         }
     }, [courses]);
 
     const onSubmit = async (formData) => {
-        const payload = formData;
+        const payload = data ? Object.fromEntries(
+            Object.entries(formData).filter(([campo]) => dirtyFields[campo])
+        ) : formData;
 
         // reaproveita o mesmo formulario para cadastro e edicao
         if (data) {

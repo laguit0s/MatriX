@@ -25,10 +25,11 @@ function CourseFormModal({ data, title }) {
     });
 
     const { 
-        control, 
+        control,
+        watch,
         register, 
         handleSubmit, 
-        formState: { errors } } 
+        formState: { errors, dirtyFields } } 
         = useForm({ 
             resolver: zodResolver(courseSchema), 
             defaultValues: {
@@ -39,7 +40,9 @@ function CourseFormModal({ data, title }) {
     }});
 
     const onSubmit = async (formData) => {
-        const payload = formData;
+        const payload = data ? Object.fromEntries(
+            Object.entries(formData).filter(([campo]) => dirtyFields[campo])
+        ) : formData;
 
         // alterna entre edicao e cadastro conforme presenca de dados iniciais
         if (data) {

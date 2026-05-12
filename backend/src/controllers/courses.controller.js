@@ -26,12 +26,8 @@ async function getCourse(req, res) {
 
 // evita retorno de sucesso quando nenhum campo foi alterado
 async function updateCourse(req, res) {
-    const result = await coursesService.updateCourse(req.body, req.params.id);
-    if (result === 'Nenhum campo foi modificado.') {
-        res.status(400).json({ message: result });
-    } else {
-        res.status(200).json(result);
-    }
+    await coursesService.updateCourse(req.body, req.params.id);
+    res.sendStatus(200).json(result);
 }
 
 module.exports = {

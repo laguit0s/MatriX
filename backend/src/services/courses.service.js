@@ -11,8 +11,18 @@ async function listCourses() {
     return courses;
 }
 
+// retorna curso individual ja com valor monetario formatado
+async function getCourse(id) {
+    const course = await prisma.course.findUnique({
+        where: { id: Number(id) }
+    });
+    course.price = formatter.formatCurrency(course.price);
+    return course;
+}
+
 // salva curso padronizando campos textuais em caixa alta
 async function createCourse(body) {
+    console.log(body)
     await prisma.course.create({
         data: {
             name: body.name.toUpperCase(),
@@ -21,6 +31,33 @@ async function createCourse(body) {
             billingCycle: body.billingCycle.toUpperCase()
         }
     });
+}
+
+// atualiza somente campos enviados e avisa quando nada foi alterado
+async function updateCourse(body, id) {
+    const data = {};
+
+    if (body.name !== undefined) {
+        data.name = body.name;
+    }
+    if (body.code !== undefined) {
+        data.code = body.code;
+    }
+    if (body.price !== undefined) {
+        data.price = body.price;
+    }
+    if (body.billingCycle !== undefined) {
+        data.billingCycle = body.billingCycle;
+    }
+
+  if (Object.keys(data).length === 0) {
+    return "Nenhum campo foi modificado.";
+  }
+
+  return await prisma.course.update({
+    where: { id: Number(id) },
+    data
+  });
 }
 
 // remove curso pelo identificador recebido, bem como as matriculas e turmas associadas
@@ -62,42 +99,6 @@ async function deleteCourse(id) {
         await tx.classGroup.deleteMany({ where: { courseId: Number(id) }})
         await tx.course.delete( { where: { id: Number(id) } } )
     })
-}
-
-// retorna curso individual ja com valor monetario formatado
-async function getCourse(id) {
-    const course = await prisma.course.findUnique({
-        where: { id: Number(id) }
-    });
-    course.price = formatter.formatCurrency(course.price);
-    return course;
-}
-
-// atualiza somente campos enviados e avisa quando nada foi alterado
-async function updateCourse(body, id) {
-    const data = {};
-
-    if (body.name !== undefined) {
-        data.name = body.name;
-    }
-    if (body.code !== undefined) {
-        data.code = body.code;
-    }
-    if (body.price !== undefined) {
-        data.price = body.price;
-    }
-    if (body.billingCycle !== undefined) {
-        data.billingCycle = body.billingCycle;
-    }
-
-  if (Object.keys(data).length === 0) {
-    return "Nenhum campo foi modificado.";
-  }
-
-  return await prisma.course.update({
-    where: { id: Number(id) },
-    data
-  });
 }
 
 module.exports = {

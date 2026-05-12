@@ -153,9 +153,9 @@ function StudentFormModal({ data: initialData, title }) {
 
     const onSubmit = async (formData) => {
         // no update, envia apenas campos alterados para evitar sobrescrita desnecessaria
-        const payload = Object.fromEntries(
+        const payload = initialData ? Object.fromEntries(
             Object.entries(formData).filter(([campo]) => dirtyFields[campo])
-        );
+        ) : formData;
 
         if (initialData) {
             if (Object.keys(payload).length === 0) return;

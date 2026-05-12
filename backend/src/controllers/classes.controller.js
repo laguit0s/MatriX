@@ -7,8 +7,8 @@ async function listClasses(req, res) {
 }
 
 // retorna os detalhes de uma turma especifica
-async function listClass(req, res) {
-    const _class_ = await classesService.listClass(req.params.id);
+async function getClassProfile(req, res) {
+    const _class_ = await classesService.getClassProfile(req.params.id);
     res.status(200).json(_class_);
 }
 
@@ -25,7 +25,7 @@ async function deleteClass(req, res) {
 }
 
 // atualiza dados editaveis da turma
-async function updateClass(req, res) {
+async function updateClass(req, res, next) {
     await classesService.updateClass(req.body, req.params.id);
     res.sendStatus(204);
 }
@@ -34,6 +34,6 @@ module.exports = {
     listClasses,
     createClass,
     deleteClass,
-    listClass,
+    getClassProfile,
     updateClass,
 };

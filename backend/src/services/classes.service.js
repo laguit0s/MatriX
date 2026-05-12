@@ -1,4 +1,5 @@
 const prisma = require('../config/db');
+const AppError = require('../errors/AppError');
 
 // lista turmas com nome do curso para simplificar o consumo no frontend
 async function listClasses() {
@@ -20,7 +21,7 @@ async function listClasses() {
 }
 
 // busca uma turma e adapta o retorno com nome do curso associado
-async function listClass(id) {
+async function getClassProfile(id) {
     const _class_ = await prisma.classGroup.findUnique({
         where: { id: Number(id) },
         include: {
@@ -54,7 +55,7 @@ async function createClassName(courseId) {
         where: { courseId: Number(courseId) },
         orderBy: { number: 'desc' },
     });
-
+    
     !classNumber ? classNumber = 1 : classNumber = classNumber.number + 1;
 
     const className = `${currentYear}.${String(classNumber).padStart(2, '0')}.${courseCode.toUpperCase()}`;
@@ -77,6 +78,59 @@ async function createClass(body) {
             status: body.status.toUpperCase(),
         }
     });
+}
+
+// aplica update parcial e recalcula vagas disponiveis conforme alunos matriculados
+async function updateClass(body, id) {
+    const previous = await prisma.classGroup.findUnique({
+        where: { id: Number(id) },
+        select: { courseId: true },
+    })
+    const data = {};
+
+    if (body.courseId !== undefined && body.courseId != previous.courseId) {
+        data.courseId = body.courseId;
+    }
+    if (body.maxSeats !== undefined) {
+        const classGroup = await prisma.classGroup.findUnique( { where: { id: Number(id) } } );
+        if (body.maxSeats < classGroup.studentCount) {
+            throw new AppError ("A quantidade máxima de alunos não pode ser menor que a quantidade de alunos matriculados", 400);
+        }
+        data.maxSeats = body.maxSeats;
+    }
+    if (body.status !== undefined) {
+        data.status = body.status;
+    }
+
+    if (Object.keys(data).length === 0) {
+        throw new AppError("Nenhum campo foi modificado", 400);
+    }
+
+    await prisma.$transaction(async (tx) => {
+        const classGroup = await tx.classGroup.findUnique({where:{id: Number(id)}});
+        const effectiveMaxSeats = data.maxSeats ?? classGroup.maxSeats;
+
+        await tx.classGroup.update({
+            where: { id: Number(id) },
+            data: {
+                ...data,
+                availableSeats: effectiveMaxSeats - classGroup.studentCount,
+            }
+        })
+
+        if (data.courseId) {
+            // ao trocar o curso, regenera identificacao da turma para novo contexto
+            const newClassData = await createClassName(body.courseId);
+            await tx.classGroup.update({
+                where: {id: Number(id)},
+                data: {
+                    name: newClassData.name,
+                    number: newClassData.number,
+                    year: newClassData.year,
+                }
+            })
+        }
+    })
 }
 
 // remove turma dentro de transacao para manter consistencia de matriculas e alunos
@@ -114,54 +168,10 @@ async function deleteClass(id) {
     });
 }
 
-// aplica update parcial e recalcula vagas disponiveis conforme alunos matriculados
-async function updateClass(body, id) {
-    const data = {};
-
-    if (body.courseId !== undefined) {
-        data.courseId = body.courseId;
-    }
-    if (body.maxSeats !== undefined) {
-        const classGroup = await prisma.classGroup.findUnique( { where: { id: Number(id) } } );
-        if (body.maxSeats < classGroup.studentCount) {
-            return;
-        }
-        data.maxSeats = body.maxSeats;
-    }
-    if (body.status !== undefined) {
-        data.status = body.status;
-    }
-
-    await prisma.$transaction(async (tx) => {
-        const classGroup = await tx.classGroup.findUnique({where:{id: Number(id)}});
-
-        await tx.classGroup.update({
-            where: { id: Number(id) },
-            data: {
-                ...data,
-                availableSeats: data.maxSeats - classGroup.studentCount,
-            }
-        })
-
-        if (data.courseId) {
-            // ao trocar o curso, regenera identificacao da turma para novo contexto
-            const newClassData = await createClassName(body.courseId);
-            await tx.classGroup.update({
-                where: {id: Number(id)},
-                data: {
-                    name: newClassData.name,
-                    number: newClassData.number,
-                    year: newClassData.year,
-                }
-            })
-        }
-    })
-}
-
 module.exports = {
     listClasses,
     createClass,
     deleteClass,
-    listClass,
+    getClassProfile,
     updateClass,
 };
