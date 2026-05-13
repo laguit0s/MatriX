@@ -2,7 +2,7 @@ function AppHeader({ title, ModalComponent, modalId }) {
     
     return (
         // padrao de cabecalho compartilhado entre as telas de gerenciamento
-        <div className="app-header px-3 px-md-4 py-3 m-0">
+        <div className="app-header px-3 px-md-4 py-3 m-0 border-bottom">
             <div className="container-fluid flex-column flex-md-row align-items-start align-items-md-center justify-content-center justify-content-md-between">
                 <div className="row">
                     <p className="app-header__eyebrow mb-1 col-12">Painel administrativo</p>

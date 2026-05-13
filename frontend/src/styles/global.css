@@ -62,6 +62,10 @@
   background-color: rgba(235, 235, 235, 0.85);
 }
 
+.app-header {
+  background-color: #ffffff;
+}
+
 /* Título e subtítulo do cabeçalho das páginas. */
 .app-header__eyebrow {
   font-size: 0.75rem;

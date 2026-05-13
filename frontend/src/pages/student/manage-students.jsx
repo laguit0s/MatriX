@@ -24,25 +24,31 @@ function ManageStudents() {
 
     // exibe spinner enquanto a api ainda nao retornou os registros
     return students ? (
-        <div className="d-flex flex-column h-100">
+        <div className="d-flex flex-column h-100 bg-light">
             <AppHeader title="GERENCIAR ALUNOS" ModalComponent={() => <StudentFormModal title={'Cadastrar aluno'} />} modalId={"#student-form-modal"} />
-            <DataTable 
-            headerContent={tableHeaders} 
-            bodyContent={students} 
-            headerColumnClasses={{ 1: "width-1", 7: "width-1" }} 
-            bodyColumnClasses={{ 1: 'text-center p-0', 2: "text-start", 5: "text-start", 8: "text-center p-0 width-1" }} 
-            ignoredProperties={['id', 'enrollmentDate', 'enrollmentCount']} 
-            startColumn={{
-                value: 'Profile', 
-                profileLink: true,
-                renderProfile: (itemId) => 
-                    renderProfileLink('/manage-students/', itemId, 'bi bi-person-square')
-            }}
-            endColumn={{
-                delete: true, 
-                deleteCell: (itemId) => 
-                    deleteActionCell('/api/manage-students/', itemId, setSelectedDeleteRoute)
-            }}/>
+            {
+                students.length ? (
+                    <DataTable 
+                    headerContent={tableHeaders} 
+                    bodyContent={students} 
+                    headerColumnClasses={{ 1: "width-1", 7: "width-1" }} 
+                    bodyColumnClasses={{ 1: 'text-center p-0', 2: "text-start", 5: "text-start", 8: "text-center p-0 width-1" }} 
+                    ignoredProperties={['id', 'enrollmentDate', 'enrollmentCount']} 
+                    startColumn={{
+                        value: 'Profile', 
+                        profileLink: true,
+                        renderProfile: (itemId) => 
+                            renderProfileLink('/manage-students/', itemId, 'bi bi-person-square')
+                    }}
+                    endColumn={{
+                        delete: true, 
+                        deleteCell: (itemId) => 
+                            deleteActionCell('/api/manage-students/', itemId, setSelectedDeleteRoute)
+                    }}/>
+                ) : (
+                    <h3 className="text-center my-auto">Sem alunos cadastrados</h3>
+                )
+            }
             <DeleteModal route={selectedDeleteRoute}/>
         </div>
     ) : (

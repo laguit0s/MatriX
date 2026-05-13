@@ -24,25 +24,31 @@ function ManageCourses() {
 
     // mostra indicador de carregamento ate receber os dados
     return courses ? (
-        <div className="d-flex flex-column h-100">
+        <div className="d-flex flex-column h-100 bg-light">
             <AppHeader title="GERENCIAR CURSOS" ModalComponent={() => <CourseFormModal title={'Cadastrar curso'} />} modalId={"#course-form-modal"} />
-            <DataTable 
-            headerContent={tableHeaders} 
-            bodyContent={courses} 
-            headerColumnClasses={{ 1: "width-1", 6: "width-1" }} 
-            bodyColumnClasses={{ 1: 'text-center p-0', 2: "text-start", 6: "text-center p-0" }} 
-            ignoredProperties={['id']} 
-            startColumn={{
-                value: 'Profile', 
-                profileLink: true,
-                renderProfile: (itemId) => 
-                    renderProfileLink('/manage-courses/', itemId, 'bi bi-mortarboard-fill')
-            }}
-            endColumn={{
-                delete: true, 
-                deleteCell: (itemId) => 
-                    deleteActionCell('/api/manage-courses/', itemId, setSelectedDeleteRoute)
-            }}/>
+            {
+                courses.length ? (
+                    <DataTable 
+                    headerContent={tableHeaders} 
+                    bodyContent={courses} 
+                    headerColumnClasses={{ 1: "width-1", 6: "width-1" }} 
+                    bodyColumnClasses={{ 1: 'text-center p-0', 2: "text-start", 6: "text-center p-0" }} 
+                    ignoredProperties={['id']} 
+                    startColumn={{
+                        value: 'Profile', 
+                        profileLink: true,
+                        renderProfile: (itemId) => 
+                            renderProfileLink('/manage-courses/', itemId, 'bi bi-mortarboard-fill')
+                    }}
+                    endColumn={{
+                        delete: true, 
+                        deleteCell: (itemId) => 
+                            deleteActionCell('/api/manage-courses/', itemId, setSelectedDeleteRoute)
+                    }}/>
+                ) : (
+                    <h3 className="text-center my-auto">Sem cursos cadastrados</h3>
+                )
+            }
             <DeleteModal route={selectedDeleteRoute}/>
         </div>
     ) : (
