@@ -4,10 +4,12 @@ import AppHeader from "../../components/.common/app-header";
 import api from "../../services/api";
 import renderProfileLink from "../../components/.common/render-profile-link";
 import deleteActionCell from "../../components/.common/delete-cell";
+import DeleteModal from "../../components/.common/delete-modal";
 import { useEffect, useState } from "react";
 
 function ManageStudents() {
     const [students, setStudents] = useState(null);
+    const [selectedDeleteRoute, setSelectedDeleteRoute] = useState(null);
 
     // carrega lista inicial para alimentar a tabela de alunos
     useEffect(() => {
@@ -39,8 +41,9 @@ function ManageStudents() {
             endColumn={{
                 delete: true, 
                 deleteCell: (itemId) => 
-                    deleteActionCell('/api/manage-students/', itemId)
+                    deleteActionCell('/api/manage-students/', itemId, setSelectedDeleteRoute)
             }}/>
+            <DeleteModal route={selectedDeleteRoute}/>
         </div>
     ) : (
         <div className="d-flex justify-content-center align-items-center h-100">

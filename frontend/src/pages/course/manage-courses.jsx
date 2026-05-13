@@ -4,10 +4,12 @@ import AppHeader from "../../components/.common/app-header";
 import api from "../../services/api";
 import renderProfileLink from "../../components/.common/render-profile-link";
 import deleteActionCell from "../../components/.common/delete-cell";
+import DeleteModal from "../../components/.common/delete-modal";
 import { useEffect, useState } from "react";
 
 function ManageCourses() {
     const [courses, setCourses] = useState(null);
+    const [selectedDeleteRoute, setSelectedDeleteRoute] = useState(null);
 
     // busca cursos na api para popular a listagem principal
     useEffect(() => {
@@ -39,8 +41,9 @@ function ManageCourses() {
             endColumn={{
                 delete: true, 
                 deleteCell: (itemId) => 
-                    deleteActionCell('/api/manage-courses/', itemId)
+                    deleteActionCell('/api/manage-courses/', itemId, setSelectedDeleteRoute)
             }}/>
+            <DeleteModal route={selectedDeleteRoute}/>
         </div>
     ) : (
         <div className="d-flex justify-content-center align-items-center h-100">

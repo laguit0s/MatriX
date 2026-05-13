@@ -4,10 +4,12 @@ import AppHeader from "../../components/.common/app-header";
 import api from "../../services/api";
 import renderProfileLink from "../../components/.common/render-profile-link";
 import deleteActionCell from "../../components/.common/delete-cell";
+import DeleteModal from "../../components/.common/delete-modal";
 import { useEffect, useState } from "react";
 
 function ManageClasses() {
     const [classes, setClasses] = useState(null);
+    const [selectedDeleteRoute, setSelectedDeleteRoute] = useState(null);
 
     // carrega turmas com dados agregados de curso para a tabela
     useEffect(() => {
@@ -47,8 +49,9 @@ function ManageClasses() {
             endColumn={{
                 delete: true, 
                 deleteCell: (itemId) => 
-                    deleteActionCell('/api/manage-classes/', itemId)
+                    deleteActionCell('/api/manage-classes/', itemId, setSelectedDeleteRoute)
             }}/>
+            <DeleteModal route={selectedDeleteRoute}/>
         </div>
     ) : (
         <div className="d-flex justify-content-center align-items-center h-100">

@@ -1,13 +1,8 @@
 import api from "../../services/api";
 
-function deleteActionCell(route, itemId, icon) {
-    async function sendRequest() {
-        // remove item no backend e recarrega a lista para refletir o estado atual
-        await api.delete(route + itemId);
-        window.location.reload(); // atualiza a tabela carregando os dados do servidor
-    }
+function deleteActionCell(route, itemId, setter) {
     return (
-        <i className={(icon ? icon : 'bi bi-trash') + ' btn'} onClick={sendRequest}></i>
+        <i className='bi bi-trash btn' data-bs-toggle="modal" data-bs-target="#delete-modal" onClick={() => setter(route + itemId)}></i>
     )
 }
 
