@@ -3,8 +3,10 @@ import { IMask, IMaskInput } from 'react-imask';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
+import { useState } from 'react';
 
 function CourseFormModal({ data, title }) {
+    const [serverError, setServerError] = useState(null);
     // garante formato minimo dos dados antes de salvar curso
     const courseSchema = z.object({
         name: 
@@ -18,6 +20,7 @@ function CourseFormModal({ data, title }) {
             .max(30, "O código não deve exceder 30 caracteres."),
         price: 
             z.coerce.number()
+            .positive("O preço deve ser positivo")
             .max(999999, "Preço máximo excedido")
             .multipleOf(0.01, "Máximo de 2 casas decimais"),
         billingCycle: 
@@ -44,14 +47,19 @@ function CourseFormModal({ data, title }) {
             Object.entries(formData).filter(([campo]) => dirtyFields[campo])
         ) : formData;
 
-        // alterna entre edicao e cadastro conforme presenca de dados iniciais
-        if (data) {
-            await api.patch(`/api/manage-courses/${data.id}`, payload);
-        } else {
-            await api.post('/api/manage-courses', payload);
-        }
+        try {
+            // alterna entre edicao e cadastro conforme presenca de dados iniciais
+            if (data) {
+                await api.patch(`/api/manage-courses/${data.id}`, payload);
+            } else {
+                await api.post('/api/manage-courses', payload);
+            }
 
-        window.location.reload();
+            window.location.reload();
+        } catch(err) {
+            const message = err.response?.data?.message || 'Erro ao conectar com o servidor';
+            setServerError(message);
+        }
     };
 
     const onError = (errors) => {
@@ -66,6 +74,11 @@ function CourseFormModal({ data, title }) {
                         <h1 className="modal-title text-center m-0 fs-4">{title}</h1>
                     </div>
                     <form className="modal-body" onSubmit={handleSubmit(onSubmit, onError)}>
+                        {serverError && (
+                            <div className="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                                <div>Internal server error: {serverError}</div>
+                            </div>
+                        )}
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col">
                                 <label>Nome:</label>

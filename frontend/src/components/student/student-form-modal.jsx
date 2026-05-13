@@ -8,6 +8,7 @@ import { useEffect, useState, useMemo } from 'react';
 function StudentFormModal({ data: initialData, title }) {
     let [courses, setCourses] = useState(null);
     let [classes, setClasses] = useState(null);
+    let [serverError, setServerError] = useState(null);
 
     const onlyDigits = (val) => val.replace(/\D/g, '');
 
@@ -146,9 +147,7 @@ function StudentFormModal({ data: initialData, title }) {
         if (courses && classes) {
             const validClasses = classes.filter(classGroup => classGroup.courseId == watch('courseId'));
             validClasses.length ? setValue('classGroupId', validClasses[0].id) : setValue('classGroupId', null);
-            console.log('Course ID: ' + watch('courseId') + ' | Class ID: ' + watch('classGroupId'));
         }
-        console.log(watch('courseId'))
     }, [watch('courseId')]);
 
     const onSubmit = async (formData) => {
@@ -157,14 +156,18 @@ function StudentFormModal({ data: initialData, title }) {
             Object.entries(formData).filter(([campo]) => dirtyFields[campo])
         ) : formData;
 
-        if (initialData) {
-            if (Object.keys(payload).length === 0) return;
-            await api.patch(`/api/manage-students/${initialData.id}`, payload);
-        } else {
-            await api.post('/api/manage-students', formData);
+        try {
+            if (initialData) {
+                if (Object.keys(payload).length === 0) return;
+                await api.patch(`/api/manage-students/${initialData.id}`, payload);
+            } else {
+                await api.post('/api/manage-students', formData);
+            }
+            window.location.reload();
+        } catch(err) {
+            const message = err.response?.data?.message || 'Erro ao conectar com o servidor';
+            setServerError(message);
         }
-
-        window.location.reload();
     };
 
     const onError = (errors) => {
@@ -179,6 +182,13 @@ function StudentFormModal({ data: initialData, title }) {
                         <h1 className="modal-title text-center m-0 fs-4">{title}</h1>
                     </div>
                     <form className="modal-body" onSubmit={handleSubmit(onSubmit, onError)}>
+                        {serverError && (
+                            <div className="alert alert-danger d-flex align-items-center col-12" role="alert">
+                                <div>
+                                    Internal server error: {serverError}
+                                </div>
+                            </div>
+                        )}
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col">
                                 <label htmlFor="student-full-name">Nome completo:</label>

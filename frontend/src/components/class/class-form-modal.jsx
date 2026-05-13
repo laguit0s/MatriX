@@ -7,6 +7,7 @@ import { useEffect, useState, useMemo } from 'react';
 
 function ClassFormModal({ data, title }) {
     let [courses, setCourses] = useState(null);
+    const [serverError, setServerError] = useState(null);
 
     // valida limites de vagas e campos obrigatorios antes do envio para api
     const classSchema = useMemo(() => z.object({
@@ -58,15 +59,19 @@ function ClassFormModal({ data, title }) {
             Object.entries(formData).filter(([campo]) => dirtyFields[campo])
         ) : formData;
 
-        // reaproveita o mesmo formulario para cadastro e edicao
-        if (data) {
-            await api.patch(`/api/manage-classes/${data.id}`, payload);
-        } else {
-            console.log(payload);
-            await api.post('/api/manage-classes', payload);
-        }
+        try {
+            // reaproveita o mesmo formulario para cadastro e edicao
+            if (data) {
+                await api.patch(`/api/manage-classes/${data.id}`, payload);
+            } else {
+                await api.post('/api/manage-classes', payload);
+            }
 
-        window.location.reload();
+            window.location.reload();
+        } catch(err) {
+            const message = err.response?.data?.message || 'Erro ao conectar com o servidor';
+            setServerError(message);
+        }
     };
 
     const onError = (errors) => {
@@ -81,6 +86,11 @@ function ClassFormModal({ data, title }) {
                         <h1 className="modal-title text-center m-0 fs-4">{title}</h1>
                     </div>
                     <form className="modal-body" onSubmit={handleSubmit(onSubmit, onError)}>
+                        {serverError && (
+                            <div className="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                                <div>Internal server error: {serverError}</div>
+                            </div>
+                        )}
                         <div className="row row-cols-2 gx-2 gy-4">
                             <div className="col form-group">
                                 <label>Curso:</label>
