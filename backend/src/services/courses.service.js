@@ -48,24 +48,42 @@ async function updateCourse(body, id) {
         const data = {};
 
         if (body.name !== undefined) {
-            data.name = body.name;
+            data.name = body.name.toUpperCase();
         }
         if (body.code !== undefined) {
-            data.code = body.code;
+            data.code = body.code.toUpperCase();
         }
         if (body.price !== undefined) {
             data.price = body.price;
         }
         if (body.billingCycle !== undefined) {
-            data.billingCycle = body.billingCycle;
+            data.billingCycle = body.billingCycle.toUpperCase();
         }
 
         if (Object.keys(data).length === 0) throw new AppError("No modified fields", 400);
         
-        return await prisma.course.update({
-            where: { id: Number(id) },
-            data
-        });
+        return await prisma.$transaction(async (tx) => {
+            await tx.course.update({
+                where: { id: Number(id) },
+                data
+            });
+
+            if (data.code) {
+                const classGroups = await tx.classGroup.findMany({ where: { courseId: Number(id) } });
+                if (!classGroups.length) return;
+
+                const newCode = data.code;
+
+                for (c of classGroups) {
+                    newName = c.name.replace(/[^.]+$/, newCode);
+                    await tx.classGroup.update({
+                        where: { id: c.id },
+                        data: { name: newName },
+                    })
+                }
+            }
+        })
+
   } catch(err) {
         if (err instanceof AppError) throw err;
         handleDbError(err);
