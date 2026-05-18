@@ -53,14 +53,14 @@ async function createEnrollment(studentId, courseId, classGroupId, tx) {
     studentId: Number(studentId),
     courseId: Number(courseId),
     classGroupId: Number(classGroupId),
-    name: enrollmentName
+    name: enrollmentName,
+    status: "ATIVA"
   }
   });
 
   await tx.student.update({ 
     where: { id: Number(studentId) }, 
     data: { 
-      enrollmentStatus: 'ATIVA', 
       enrollmentCount: {increment: 1}
     } 
   });

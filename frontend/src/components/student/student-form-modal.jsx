@@ -114,18 +114,6 @@ function StudentFormModal({ data: initialData, title }) {
         !initialData && loadClasses();
     }, []);
 
-    // define a primeira turma disponivel para evitar select sem valor inicial
-    useEffect(() => {
-        if (!initialData && classes?.length && !watch('classGroupId')) {
-            const selectedCourseId = watch('courseId');
-            const candidate = classes.find(cg =>
-                cg.status === 'ABERTA' &&
-                (selectedCourseId ? cg.courseId == Number(selectedCourseId) : true)
-            );
-            setValue('classGroupId', candidate ? String(candidate.id) : null);
-        }
-    }, [classes, watch('courseId')]);
-
     // carrega cursos apenas no fluxo de cadastro
     useEffect(() => {
         async function loadCourses() {
@@ -134,13 +122,6 @@ function StudentFormModal({ data: initialData, title }) {
         }
         !initialData && loadCourses();
     }, []);
-
-    // define curso inicial quando houver opcoes retornadas pela api
-    useEffect(() => {
-        if (!initialData && courses?.length && !watch('courseId')) {
-            setValue('courseId', String(courses[0].id));
-        }
-    }, [courses]);
 
     // atualiza turma selecionada para manter curso e turma consistentes
     useEffect(() => {
@@ -234,13 +215,16 @@ function StudentFormModal({ data: initialData, title }) {
                                 <>
                                     <div className="col">
                                         <label>Curso:</label>
-                                        <select className='form-select' {...register('courseId')} disabled={watch('courseId') ? false : true}>
+                                        <select className='form-select' {...register('courseId')} disabled={courses ? false : true}>
                                             {
                                                 courses
-                                                ? 
-                                                courses.map((course, i) => (
-                                                    <option key={i} value={course.id}>{course.name}</option>
-                                                ))
+                                                ?
+                                                <>
+                                                    <option value="">-- SELECIONE UM CURSO --</option>
+                                                    {courses.map((course, i) => (
+                                                        <option key={i} value={course.id}>{course.name}</option>
+                                                    ))}                    
+                                                </> 
                                                 :
                                                 (<option value="">SEM CURSOS CADASTRADOS</option>)
                                             }
@@ -257,7 +241,7 @@ function StudentFormModal({ data: initialData, title }) {
                                                 ?
                                                 classes.filter(classGroup => classGroup.courseId == Number(watch('courseId')) && classGroup.status == 'ABERTA').map((classGroup, i) => (
                                                     <option key={i} value={classGroup.id}>{classGroup.name}</option>
-                                                ))
+                                                ))                   
                                                 :
                                                 (<option disabled value="">SEM TURMAS ABERTAS PARA O CURSO</option>)
                                             }

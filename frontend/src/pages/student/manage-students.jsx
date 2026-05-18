@@ -15,12 +15,18 @@ function ManageStudents() {
     useEffect(() => {
         async function loadStudents() {
             const response = await api.get('/api/manage-students');
-            setStudents(response.data);
+            
+            setStudents(
+                response.data.map(s => ({
+                    ...s,
+                    status: s.enrollmentCount ? "MATRICULADO" : "PENDENTE"
+                }))
+            );
         }
         loadStudents();
     }, []);
 
-    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", 'MATRÍCULA', ''];
+    const tableHeaders = [<i className="bi bi-gear"></i>, "NOME", "CPF", "DATA DE NASCIMENTO", "E-MAIL", "TELEFONE", 'SITUAÇÃO', ''];
 
     // exibe spinner enquanto a api ainda nao retornou os registros
     return students ? (

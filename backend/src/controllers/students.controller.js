@@ -2,6 +2,7 @@ const studentsService = require('../services/students.service');
 
 // cria novo aluno a partir dos dados enviados no formulario
 async function createStudent(req, res, next) {
+  console.log(req.body);
   await studentsService.createStudent(req.validatedData.body);
   res.sendStatus(201);
 }

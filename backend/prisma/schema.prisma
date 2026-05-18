@@ -22,7 +22,6 @@ model Student {
   email            String       @unique
   phone            String?      @map("telefone")
   enrollmentDate   DateTime     @default(now()) @map("data_matricula")
-  enrollmentStatus String       @default("PENDENTE") @map("statusMatricula")
   enrollmentCount  Int          @default(0) @map("quantidadeMatriculas")
 
   enrollments      Enrollment[] @relation("StudentEnrollments")
@@ -66,6 +65,7 @@ model Enrollment {
   courseId     Int        @map("cursoId")
   classGroupId Int        @map("turmaId")
   name         String     @unique @map("nome")
+  status       String
 
   student      Student    @relation("StudentEnrollments", fields: [studentId], references: [id])
   course       Course     @relation("CourseEnrollments", fields: [courseId], references: [id])

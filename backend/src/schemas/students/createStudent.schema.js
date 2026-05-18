@@ -30,16 +30,14 @@ const createStudentSchema = z.object({
             .trim()
             .toLowerCase()
             .email(),
-        courseId: 
-            z.coerce.number()
-            .int()
-            .positive()
-            .optional(),
-        classGroupId: 
-            z.coerce.number()
-            .int()
-            .positive()
-            .optional(),
+        courseId: z.preprocess(
+            val => (val === "" || val == null) ? undefined : val,
+            z.coerce.number().int().positive().optional()
+        ),
+        classGroupId: z.preprocess(
+            val => (val === "" || val == null) ? undefined : val,
+            z.coerce.number().int().positive().optional()
+        ),
     }).refine((data) => {
         if (data.courseId && !data.classGroupId || !data.courseId && data.classGroupId) {
             return false;

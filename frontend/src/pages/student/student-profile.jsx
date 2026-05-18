@@ -5,17 +5,17 @@ import StudentFormModal from '../../components/student/student-form-modal';
 
 function StudentProfile() {
     const ppColor = '#006eff';
-    const badgeColors = {pendente: "warning", ativa: "success", trancada: "secondary", cancelada: "danger", concluida: "info"};
+    const badgeColors = {pendente: "warning", matriculado: "success"};
 
     const { id } = useParams();
-    let [data, setData] = useState(null);
+    let [studentData, setStudentData] = useState(null);
 
     // busca dados completos do aluno para exibir e editar no mesmo fluxo
     useEffect(() => {
         async function carregarDados() {
             try {
                 const req = await api.get(`/api/manage-students/${id}`);
-                setData(req.data);
+                setStudentData({...req.data, status: req.data.enrollmentCount ? "MATRICULADO" : "PENDENTE"})
             } catch(e) {
                 console.error(e);
             }
@@ -24,10 +24,10 @@ function StudentProfile() {
     }, [id])
 
     // renderiza spinner ate o retorno da api
-    return data ? (
+    return studentData ? (
         
         <div className="d-flex flex-column h-100 w-100">
-            <StudentFormModal data={data} title={'Editar dados'} />
+            <StudentFormModal data={studentData} title={'Editar dados'} />
             <div className="d-flex flex-column align-items-start p-4 gap-3">
                 <Link to="/manage-students" className='app-header__eyebrow'>
                     <i className="bi bi-house-fill"></i>
@@ -40,12 +40,12 @@ function StudentProfile() {
                     <div className="d-flex align-items-start justify-content-between mb-4 gap-4">
                         <div className="d-flex align-items-center gap-4">
                             <div className="fw-bold text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '80px', height: '80px', fontSize: '2rem', backgroundColor: `${ppColor}`}}>
-                                <span>{data.fullName[0]}</span>
+                                <span>{studentData.fullName[0]}</span>
                             </div>
                             <div>
-                                <h3 className="mb-1">{data.fullName}</h3>
-                                <p className="text-muted m-0">Matrícula: <span className={"badge text-bg-"+badgeColors[`${data.enrollmentStatus.toLowerCase()}`]}>{data.enrollmentStatus}</span></p>
-                                <p className="text-muted m-0">Cadastrado em: {data.enrollmentDate}</p>
+                                <h3 className="mb-1">{studentData.fullName}</h3>
+                                <p className="text-muted m-0">Situação: <span className={"badge text-bg-"+badgeColors[`${studentData.status.toLowerCase()}`]}>{studentData.status}</span></p>
+                                <p className="text-muted m-0">Cadastrado em: {studentData.enrollmentDate}</p>
                             </div>
                         </div>
                     </div>
@@ -58,19 +58,19 @@ function StudentProfile() {
                         </button>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">cpf</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{data.cpf}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{studentData.cpf}</p>
                         </div>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">data de nascimento</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{data.birthDate}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{studentData.birthDate}</p>
                         </div>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">e-mail</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{data.email}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{studentData.email}</p>
                         </div>
                         <div className="col-12">
                             <label className="text-muted small text-uppercase">telefone</label>
-                            <p className="fs-6 fw-bold mb-0 text-break">{data.phone}</p>
+                            <p className="fs-6 fw-bold mb-0 text-break">{studentData.phone}</p>
                         </div>
                     </div>
                 </div>
